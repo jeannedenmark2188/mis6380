@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MVU Tableau Walkthrough — Self-Paced Labs</title>
+<style>
+  :root{
+    --ink:#10314A; --ink-soft:#3D5C74; --paper:#F2F5F7; --surface:#FFFFFF;
+    --rule:#D3DDE3; --rule-soft:#E7EDF1;
+    --amber:#9C6B15; --amber-bg:#FDF5E6; --amber-rule:#E0BE7C;
+    --moss:#2C6B4F; --clay:#9C3B2A; --clay-bg:#FBEFEC; --code-bg:#0E2536;
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+    --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+    font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  header.masthead{background:var(--ink);color:#EAF1F5;padding:26px 32px 22px;border-bottom:4px solid var(--amber)}
+  .masthead-inner{max-width:1240px;margin:0 auto}
+  .course{font-family:var(--sans);font-size:12.5px;letter-spacing:.09em;color:#8FB2C8;margin:0 0 6px}
+  .masthead h1{font-family:var(--sans);font-weight:650;font-size:26px;letter-spacing:-.015em;margin:0 0 8px}
+  .masthead p{margin:0;max-width:62ch;font-size:15.5px;color:#C3D6E2;line-height:1.55}
+  .progress-strip{position:sticky;top:0;z-index:40;background:var(--surface);
+    border-bottom:1px solid var(--rule);padding:9px 32px}
+  .progress-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:18px}
+  .bar{flex:1;height:6px;background:var(--rule-soft);border-radius:3px;overflow:hidden}
+  .bar span{display:block;height:100%;width:4.8%;background:var(--moss);transition:width .35s ease}
+  .progress-label{font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);white-space:nowrap}
+  .viewtoggle{font-family:var(--sans);font-size:12px;font-weight:600;background:#EDF2F5;border:1px solid var(--rule);
+    color:var(--ink);border-radius:3px;padding:5px 11px;cursor:pointer;display:none}
+  .shell{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:282px 1fr;gap:34px;padding:26px 32px 90px}
+  nav.rail{position:sticky;top:70px;align-self:start;max-height:calc(100vh - 96px);overflow-y:auto;padding-right:4px}
+  .mod-block{margin-bottom:22px}
+  .mod-head{font-family:var(--sans);font-size:13px;font-weight:650;color:var(--ink);
+    padding:7px 0 7px 12px;border-left:3px solid var(--amber);margin-bottom:6px;line-height:1.35}
+  .mod-head small{display:block;font-weight:400;color:var(--ink-soft);font-size:11.5px;margin-top:2px}
+  .raillink{display:block;text-decoration:none;font-family:var(--sans);font-size:13.2px;color:var(--ink-soft);
+    padding:5px 10px 5px 27px;border-radius:5px;line-height:1.4;position:relative}
+  .raillink:hover{background:#E5EDF2;color:var(--ink)}
+  .raillink:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+  .raillink.current{background:var(--ink);color:#fff;font-weight:550}
+  .raillink::before{content:"";position:absolute;left:10px;top:11px;width:9px;height:9px;
+    border-radius:50%;border:1.5px solid var(--rule)}
+  .raillink.done::before{background:var(--moss);border-color:var(--moss)}
+  main{min-width:0}
+  .step-card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    padding:34px 40px 30px;margin-bottom:22px;scroll-margin-top:74px}
+  .eyebrow{font-family:var(--sans);font-size:12.5px;color:var(--amber);margin:0 0 7px;font-weight:600}
+  .step-card h2{font-family:var(--sans);font-weight:650;font-size:23px;letter-spacing:-.012em;margin:0 0 4px;line-height:1.25}
+  .stepmeta{font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);margin:0 0 22px;
+    padding-bottom:16px;border-bottom:1px solid var(--rule-soft)}
+  .step-card p{margin:0 0 14px;max-width:74ch}
+  .step-card ul,.step-card ol{margin:0 0 15px;padding-left:22px;max-width:72ch}
+  .step-card li{margin-bottom:7px}
+  .step-card h3{font-family:var(--sans);font-size:15px;font-weight:640;margin:24px 0 9px}
+  kbd{font-family:var(--sans);font-size:13.5px;font-weight:600;background:#EDF2F5;border:1px solid var(--rule);
+    border-bottom-width:2px;border-radius:3px;padding:1px 6px;white-space:nowrap}
+  .field{font-family:var(--mono);font-size:14px;background:#EDF2F5;padding:1px 5px;border-radius:3px;color:#12435C}
+  .formula{position:relative;margin:14px 0 18px}
+  .formula pre{background:var(--code-bg);color:#DCEAF2;font-family:var(--mono);font-size:13.6px;line-height:1.6;
+    padding:15px 17px;border-radius:3px;overflow-x:auto;margin:0;white-space:pre-wrap;word-break:break-word}
+  .formula .copy{position:absolute;top:9px;right:9px;font-family:var(--sans);font-size:11.5px;font-weight:600;
+    background:#28495E;color:#CFE2ED;border:1px solid #3D6580;border-radius:3px;padding:4px 10px;cursor:pointer;display:none}
+  .formula .copy:hover{background:#33586F;color:#fff}
+  .formula .copy.ok{background:var(--moss);border-color:var(--moss);color:#fff}
+  .note,.warn,.trap{border-left:3px solid;padding:13px 18px;margin:18px 0;border-radius:0 3px 3px 0;font-size:16px}
+  .note{background:var(--amber-bg);border-color:var(--amber-rule)}
+  .warn{background:var(--clay-bg);border-color:var(--clay)}
+  .trap{background:#0E2536;border-color:var(--amber);color:#DCEAF2}
+  .trap strong{color:#F0C97C}
+  .note p:last-child,.warn p:last-child,.trap p:last-child{margin-bottom:0}
+  .note .lead,.warn .lead,.trap .lead{font-family:var(--sans);font-size:13px;font-weight:650;display:block;margin-bottom:4px}
+  .note .lead{color:var(--amber)} .warn .lead{color:var(--clay)} .trap .lead{color:#F0C97C}
+  .check{border:1px solid var(--rule);border-top:3px solid var(--moss);background:#FAFCFD;
+    padding:17px 20px;margin:22px 0;border-radius:0 0 3px 3px}
+  .check .lead{font-family:var(--sans);font-size:13px;font-weight:650;color:var(--moss);display:block;margin-bottom:6px}
+  .check p{margin:0 0 11px;font-size:16px}
+  .check-row{display:none;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:11px}
+  .check input{font-family:var(--mono);font-size:15px;width:130px;padding:7px 10px;
+    border:1px solid var(--rule);border-radius:3px;background:#fff;color:var(--ink)}
+  .check input:focus{outline:2px solid var(--moss);outline-offset:-1px;border-color:var(--moss)}
+  .check button{font-family:var(--sans);font-size:13.5px;font-weight:600;background:var(--ink);color:#fff;
+    border:none;border-radius:3px;padding:8px 16px;cursor:pointer}
+  .verdict{font-family:var(--sans);font-size:13.5px;font-weight:550}
+  .verdict.yes{color:var(--moss)} .verdict.no{color:var(--clay)}
+  details{margin:16px 0;border:1px solid var(--rule);border-radius:3px;background:#FAFCFD}
+  details summary{font-family:var(--sans);font-size:13.5px;font-weight:600;padding:11px 16px;cursor:pointer}
+  details summary:hover{background:#EDF2F5}
+  details[open] summary{border-bottom:1px solid var(--rule-soft)}
+  .details-body{padding:14px 18px 4px;font-size:16px}
+  table{border-collapse:collapse;width:100%;margin:16px 0 20px;font-family:var(--sans);font-size:14px}
+  th{background:var(--ink);color:#fff;text-align:left;padding:8px 11px;font-weight:600;font-size:13px}
+  td{padding:8px 11px;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+  tr:nth-child(even) td{background:#F7FAFB}
+  .stepnav{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;
+    border-top:1px solid var(--rule-soft)}
+  .stepnav a,.stepnav span{font-family:var(--sans);font-size:14px;font-weight:600;padding:11px 22px;
+    border-radius:3px;border:1px solid var(--ink);text-decoration:none;display:inline-block}
+  .stepnav .prev{background:#fff;color:var(--ink)}
+  .stepnav .prev:hover{background:#EDF2F5}
+  .stepnav .next{background:var(--ink);color:#fff}
+  .stepnav .next:hover{background:#1C4661}
+  .stepnav .disabled{opacity:.32;pointer-events:none}
+  .deliv{background:var(--ink);color:#DCEAF2;padding:22px 26px;border-radius:3px;margin:22px 0 4px}
+  .deliv h3{font-family:var(--sans);font-size:15px;color:#F0C97C;margin:0 0 10px}
+  .deliv ul{padding-left:20px;margin:0}
+  .deliv li{margin-bottom:7px}
+  .deliv code{font-family:var(--mono);font-size:13.5px;background:#1E3F55;padding:1px 5px;border-radius:3px}
+  .keyhint{text-align:center;font-family:var(--sans);font-size:12px;color:var(--ink-soft);margin:0 0 8px;display:none}
+  @media (max-width:920px){
+    .shell{grid-template-columns:1fr;padding:20px 18px 70px;gap:20px}
+    nav.rail{position:static;max-height:none;border-bottom:1px solid var(--rule);padding-bottom:16px}
+    .step-card{padding:24px 22px}
+    header.masthead{padding:22px 20px 18px}
+    .progress-strip{padding:9px 18px}
+  }
+  @media print{
+    .progress-strip,nav.rail,.stepnav,.keyhint{display:none!important}
+    .shell{grid-template-columns:1fr;padding:0}
+    .step-card{display:block!important;border:none;padding:0 0 26px;page-break-after:always}
+    body{background:#fff;font-size:11pt}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="course">DIV 6380 · Advanced Visual Analytics</p>
+    <h1>Tableau labs with the MVU dataset</h1>
+    <p>Six self-paced modules covering visual encoding, data preparation and quality auditing, calculated fields, table calculations and parameters, dashboards with story points, and spatial analytics — all built on the Mesquite Valley University data. Work at your own pace. Nothing here is timed.</p>
+  </div>
+</header>
+
+<div class="progress-strip">
+  <div class="progress-inner">
+    <span class="progress-label" id="plabel">40 steps</span>
+    <div class="bar"><span id="pbar"></span></div>
+    <span class="progress-label" id="pmod">Module 1</span>
+    <button type="button" class="viewtoggle" id="viewtoggle">Show all steps</button>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="rail" aria-label="Lab steps">
+<div class="mod-block"><div class="mod-head">Module 1: Foundations and visual encodings<small>Connect, read the data pane, encode</small></div>
+<a class="raillink" href="#step-0" data-i="0">Set up and connect</a>
+<a class="raillink" href="#step-1" data-i="1">Read the metadata before you build</a>
+<a class="raillink" href="#step-2" data-i="2">Dimensions, measures, and the pill colors</a>
+<a class="raillink" href="#step-3" data-i="3">Position and length: the bar chart</a>
+<a class="raillink" href="#step-4" data-i="4">Color and size: the scatter plot</a>
+<a class="raillink" href="#step-5" data-i="5">The ethics of the axis</a>
+</div>
+<div class="mod-block"><div class="mod-head">Module 2: Data preparation and quality auditing<small>Joins, unions, cleaning, audit</small></div>
+<a class="raillink" href="#step-6" data-i="6">Document the data before you touch it</a>
+<a class="raillink" href="#step-7" data-i="7">Relationships versus joins</a>
+<a class="raillink" href="#step-8" data-i="8">Test two join types</a>
+<a class="raillink" href="#step-9" data-i="9">Union files with mismatched schemas</a>
+<a class="raillink" href="#step-10" data-i="10">Find and fix three quality problems</a>
+<a class="raillink" href="#step-11" data-i="11">Deduplicate — in the right order</a>
+<a class="raillink" href="#step-12" data-i="12">Check for join fan-out</a>
+<a class="raillink" href="#step-13" data-i="13">Run the quality audit</a>
+</div>
+<div class="mod-block"><div class="mod-head">Module 3: Calculated fields and aggregation<small>Row-level, aggregate, logical, date and string</small></div>
+<a class="raillink" href="#step-14" data-i="14">Row-level versus aggregate</a>
+<a class="raillink" href="#step-15" data-i="15">Conditional logic: academic standing</a>
+<a class="raillink" href="#step-16" data-i="16">Date calculations: measuring a gap</a>
+<a class="raillink" href="#step-17" data-i="17">Level of detail: one value per student</a>
+<a class="raillink" href="#step-18" data-i="18">String calculations</a>
+<a class="raillink" href="#step-19" data-i="19">Formatting and default properties</a>
+<a class="raillink" href="#step-20" data-i="20">The cohort trap</a>
+<a class="raillink" href="#step-21" data-i="21">Build the summary cross-tab</a>
+</div>
+<div class="mod-block"><div class="mod-head">Module 4: Table calculations and parameters<small>Addressing, partitioning, interactivity</small></div>
+<a class="raillink" href="#step-22" data-i="22">Review: are you ready for Module 4?</a>
+<a class="raillink" href="#step-23" data-i="23">Worksheet 1 — build the base view</a>
+<a class="raillink" href="#step-24" data-i="24">Worksheet 1 — addressing and partitioning</a>
+<a class="raillink" href="#step-25" data-i="25">Worksheet 2 — percent difference and a reference line</a>
+<a class="raillink" href="#step-26" data-i="26">Worksheet 2 — moving average, and what it hides</a>
+<a class="raillink" href="#step-27" data-i="27">Worksheet 3 — a parameter, several metrics</a>
+<a class="raillink" href="#step-28" data-i="28">Your three captions, and what to submit</a>
+</div>
+<div class="mod-block"><div class="mod-head">Module 5: Dashboards and story points<small>Layout, actions, narrative</small></div>
+<a class="raillink" href="#step-29" data-i="29">Build the three views you&#x27;ll assemble</a>
+<a class="raillink" href="#step-30" data-i="30">Containers, not floating objects</a>
+<a class="raillink" href="#step-31" data-i="31">Make it interactive</a>
+<a class="raillink" href="#step-32" data-i="32">What did you leave out?</a>
+<a class="raillink" href="#step-33" data-i="33">Story points</a>
+<a class="raillink" href="#step-34" data-i="34">The story that misleads</a>
+</div>
+<div class="mod-block"><div class="mod-head">Module 6: Spatial analytics<small>Points, layers, distance, flows</small></div>
+<a class="raillink" href="#step-35" data-i="35">Turn coordinates into geometry</a>
+<a class="raillink" href="#step-36" data-i="36">Density, and what it really shows</a>
+<a class="raillink" href="#step-37" data-i="37">Distance and service areas</a>
+<a class="raillink" href="#step-38" data-i="38">Origin-destination flows</a>
+<a class="raillink" href="#step-39" data-i="39">What maps do to readers</a>
+</div>
+  </nav>
+  <main>
+    <p class="keyhint">Use the left and right arrow keys to move between steps.</p>
+
+  <section class="step-card" id="step-0" data-i="0">
+    <p class="eyebrow">Module 1 &middot; Step 1 of 6</p>
+    <h2>Set up and connect</h2>
+    <p class="stepmeta">Tableau Desktop · 10 min</p>
+    
+    
+      <p>You need two things open before you start: <strong>Tableau Desktop</strong> and the folder holding the MVU files. This module uses only the cleaned data, so you don't need Prep yet.</p>
+      <ol>
+        <li>Launch Tableau Desktop.</li>
+        <li>Under the <strong>Connect</strong> pane, choose <kbd>Text file</kbd>.</li>
+        <li>Open <span class="field">mvu_student_dim.csv</span>.</li>
+        <li>Click <kbd>Sheet 1</kbd> at the bottom left.</li>
+      </ol>
+      <div class="note"><span class="lead">If the preview looks scrambled</span>
+      <p>Tick <strong>Use Data Interpreter</strong> in the left panel. You shouldn't need it for this file — it's already clean — but it's worth knowing where the box lives before you hit a file that does need it in Module 2.</p></div>
+      <div class="check" data-answer="1400" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>How many rows does Tableau report at the bottom of the data source page?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="How many rows does Tableau report at the bottom of the data source page?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1400</strong></p><p>One row per student. If you see 1,401 you're counting the header — Tableau doesn't.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><span class="prev disabled">&larr; Previous</span><a class="next" href="#step-1">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-1" data-i="1">
+    <p class="eyebrow">Module 1 &middot; Step 2 of 6</p>
+    <h2>Read the metadata before you build</h2>
+    <p class="stepmeta">Tableau Desktop · 10 min</p>
+    
+    
+      <p>The single most common cause of a broken viz is a field Tableau typed differently than you assumed. Check before you drag.</p>
+      <p>On the data source page, click the icon above each column and confirm:</p>
+      <table>
+        <tr><th>Field</th><th>Should be</th><th>Why it matters</th></tr>
+        <tr><td><span class="field">entry_date</span></td><td>Date</td><td>Read as a string, you lose every date part and continuous axis</td></tr>
+        <tr><td><span class="field">latitude</span> / <span class="field">longitude</span></td><td>Geographic role</td><td>Without the role, no map</td></tr>
+        <tr><td><span class="field">student_id</span></td><td>Number — but see below</td><td>Tableau will happily sum your student IDs</td></tr>
+        <tr><td><span class="field">undergrad_gpa</span></td><td>Number (decimal)</td><td>String type blocks every aggregation</td></tr>
+      </table>
+      <h3>Fix the student ID</h3>
+      <p><span class="field">student_id</span> is numeric, so Tableau files it under Measures and defaults to SUM. That is meaningless — the sum of a set of ID numbers is not a quantity. In the data pane, drag <span class="field">student_id</span> above the line into <strong>Dimensions</strong>.</p>
+      <div class="note"><span class="lead">Worth saying out loud</span>
+      <p>"Numeric" and "measure" are not the same thing. Zip codes, years, ID numbers and phone numbers are all numbers you would never add up.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-0">&larr; Previous</a><a class="next" href="#step-2">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-2" data-i="2">
+    <p class="eyebrow">Module 1 &middot; Step 3 of 6</p>
+    <h2>Dimensions, measures, and the pill colors</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>Tableau splits every field into <strong>dimensions</strong> (categories that slice the data) and <strong>measures</strong> (quantities that get aggregated). The horizontal line in the data pane is the divider.</p>
+      <ol>
+        <li>Drag <span class="field">college</span> to <strong>Rows</strong>.</li>
+        <li>Drag <span class="field">student_id</span> to <strong>Columns</strong>.</li>
+        <li>Right-click that pill → <strong>Measure</strong> → <strong>Count (Distinct)</strong>.</li>
+      </ol>
+      <p>You get a bar chart, unasked. Tableau chose bars because you gave it one dimension and one measure — the default encoding for comparing a quantity across categories.</p>
+      <h3>Blue and green</h3>
+      <p>Blue pills are <strong>discrete</strong>: they draw headers and split the view into panes. Green pills are <strong>continuous</strong>: they draw axes.</p>
+      <ul>
+        <li>Drag <span class="field">cohort_year</span> to <strong>Columns</strong>. It arrives green, as an axis, because it's a number.</li>
+        <li>Right-click it → <strong>Discrete</strong>. It turns blue and becomes three column headers.</li>
+      </ul>
+      <p>Which is right depends on your question. As a continuous axis, 2020–2022 implies a measurable span. As discrete headers, they're three labelled groups. For three cohorts, discrete reads better.</p>
+      <div class="check" data-answer="6" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>With college on Rows and distinct student count on Columns, how many bars appear?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="With college on Rows and distinct student count on Columns, how many bars appear?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>6</strong></p><p>Five real colleges — plus one more. The extra bar is students whose program code had no match in the lookup file. Module 2 explains where they came from.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-1">&larr; Previous</a><a class="next" href="#step-3">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-3" data-i="3">
+    <p class="eyebrow">Module 1 &middot; Step 4 of 6</p>
+    <h2>Position and length: the bar chart</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>Position and length are the encodings the human eye judges most accurately. That's why bar charts remain the workhorse and why you reach for them first.</p>
+      <ol>
+        <li>New worksheet.</li>
+        <li><span class="field">program_name</span> to <strong>Rows</strong>.</li>
+        <li><span class="field">student_id</span> to <strong>Columns</strong>, set to Count (Distinct).</li>
+        <li>Use the sort button in the toolbar to order bars descending.</li>
+      </ol>
+      <p><strong>Answer this before moving on:</strong> which program has the smallest enrolment, and is that a real finding or an artifact of how the data was assembled?</p>
+      <h3>Now watch the sort move</h3>
+      <p>Drag <span class="field">cohort_year</span> to <strong>Filters</strong> and select 2020 only. The bars reorder themselves.</p>
+      <p>That's a <em>computed</em> sort — it recalculates against whatever is currently filtered in. If you need the order to hold steady while people filter, right-click the axis → <strong>Sort</strong> → <strong>Manual</strong>.</p>
+    <div class="stepnav"><a class="prev" href="#step-2">&larr; Previous</a><a class="next" href="#step-4">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-4" data-i="4">
+    <p class="eyebrow">Module 1 &middot; Step 5 of 6</p>
+    <h2>Color and size: the scatter plot</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+      <p>Now encode three variables at once and see where readability starts to break down.</p>
+      <ol>
+        <li>New worksheet.</li>
+        <li><span class="field">undergrad_gpa</span> to <strong>Columns</strong>, <span class="field">total_aid_awarded</span> to <strong>Rows</strong>.</li>
+      </ol>
+      <p>One mark. That's the grand total — Tableau aggregated everything into a single point.</p>
+      <ol start="3">
+        <li>Drag <span class="field">student_id</span> to <strong>Detail</strong> on the Marks card. The cloud appears: one mark per student.</li>
+        <li>Drag <span class="field">status</span> to <strong>Color</strong>.</li>
+        <li>Drag <span class="field">age_at_entry</span> to <strong>Size</strong>.</li>
+      </ol>
+      <div class="note"><span class="lead">Judge your own chart</span>
+      <p>Does size help you read the GPA-to-aid relationship, or does it just add noise? Be honest. Encoding a variable because you can is the most common reason dashboards become unreadable. Remove size and see whether you lost anything.</p></div>
+      <p>Add a trend line: <strong>Analytics</strong> pane → drag <strong>Trend Line</strong> onto the view. Hover it for R². Then say plainly what the R² does <em>not</em> establish.</p>
+    <div class="stepnav"><a class="prev" href="#step-3">&larr; Previous</a><a class="next" href="#step-5">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-5" data-i="5">
+    <p class="eyebrow">Module 1 &middot; Step 6 of 6</p>
+    <h2>The ethics of the axis</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min · graded deliverable</p>
+    
+    
+      <p>This is the piece you submit. You'll build the same chart twice — once honestly, once deceptively — and defend the difference.</p>
+      <ol>
+        <li>New worksheet. <span class="field">college</span> to <strong>Columns</strong>.</li>
+        <li><span class="field">is_graduated</span> to <strong>Rows</strong>, set to <strong>Average</strong>. That gives you a graduation rate between 0 and 1.</li>
+        <li>Screenshot this. It's your honest chart.</li>
+        <li>Right-click the vertical axis → <strong>Edit Axis</strong>.</li>
+        <li>Untick <strong>Include zero</strong>, then fix the range to start just below your lowest bar.</li>
+        <li>Screenshot again.</li>
+      </ol>
+      <p>Two charts, identical underlying numbers. The second makes a few percentage points look like a chasm.</p>
+      <div class="trap"><span class="lead">The point</span>
+      <p>Bar length <em>is</em> the encoding in a bar chart. Cutting the baseline breaks the relationship between what the reader measures with their eye and what the data says. A line chart tracking change over time is a different case — truncation there is often defensible, and knowing why is the actual skill.</p></div>
+      <div class="deliv"><h3>Submit for Module 1</h3><ul>
+        <li>Workbook saved as a packaged workbook (<code>.twbx</code>)</li>
+        <li>Both screenshots — honest and misleading</li>
+        <li>Two sentences on why a zero baseline is non-negotiable for bar charts</li>
+      </ul></div>
+    <div class="stepnav"><a class="prev" href="#step-4">&larr; Previous</a><a class="next" href="#step-6">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-6" data-i="6">
+    <p class="eyebrow">Module 2 &middot; Step 1 of 8</p>
+    <h2>Document the data before you touch it</h2>
+    <p class="stepmeta">Setup · 15 min</p>
+    
+    
+      <p>Your memo needs this section, and writing it now is faster than reconstructing it later.</p>
+      <p>Record for each file: title, source, file path, date accessed, what one row represents, and the row count.</p>
+      <table>
+        <tr><th>File</th><th>Grain — one row is…</th><th>Rows</th></tr>
+        <tr><td><span class="field">students_cohort_2020/21/22.csv</span></td><td>one student (with duplicates)</td><td>493 / 495 / 425</td></tr>
+        <tr><td><span class="field">enrollments_by_term.xlsx</span></td><td>one student, one course, one term</td><td>10,147</td></tr>
+        <tr><td><span class="field">financial_aid.xlsx</span></td><td>one student, one aid year, one aid type</td><td>3,897</td></tr>
+        <tr><td><span class="field">program_lookup.csv</span></td><td>one academic program</td><td>19</td></tr>
+      </table>
+      <div class="warn"><span class="lead">Grain is the whole game</span>
+      <p>Almost every wrong number in Tableau comes from combining tables of different grain without noticing. Write the grain down for each file, in words, before you connect anything.</p></div>
+      <p>Also capture a control total now — total aid awarded, or total enrolment rows. You'll compare against it at the end to prove nothing went missing.</p>
+    <div class="stepnav"><a class="prev" href="#step-5">&larr; Previous</a><a class="next" href="#step-7">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-7" data-i="7">
+    <p class="eyebrow">Module 2 &middot; Step 2 of 8</p>
+    <h2>Relationships versus joins</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+      <p>Connect <span class="field">mvu_student_dim.csv</span>, then drag <span class="field">mvu_enrollment_fact.csv</span> onto the canvas beside it.</p>
+      <p>Tableau draws a flexible line — a <strong>relationship</strong>. Set it to <span class="field">student_id</span> = <span class="field">student_id</span>.</p>
+      <h3>Run the comparison</h3>
+      <p>On a worksheet, put <span class="field">student_id</span> on Text as <strong>Count (Distinct)</strong>. Note the number.</p>
+      <p>Now go back, delete the relationship, and rebuild it as a physical <strong>inner join</strong> (double-click a table to open the physical layer). Check the same number again.</p>
+      <div class="trap"><span class="lead">What just happened</span>
+      <p>A relationship keeps each table at its own grain and aggregates each one correctly for whatever you put in the view. A physical join flattens both tables into one wide table at the enrolment grain, so every student is repeated once per course they took. Counts, averages and totals all inflate.</p></div>
+      <p>Record both numbers in your memo. This comparison is worth marks on its own.</p>
+      <div class="check" data-answer="1400" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Distinct student count using a relationship?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Distinct student count using a relationship?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1400</strong></p><p>One row per student is the whole point of the dimension table. If you got 10,147 you're looking at the joined version — that's the enrolment row count.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-6">&larr; Previous</a><a class="next" href="#step-8">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-8" data-i="8">
+    <p class="eyebrow">Module 2 &middot; Step 3 of 8</p>
+    <h2>Test two join types</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+      <p>Now a case where the join type genuinely changes your population. Connect the three raw cohort CSVs (you'll union them next step) or use <span class="field">mvu_student_dim.csv</span>, and bring in <span class="field">program_lookup.csv</span>.</p>
+      <p>Join key: <span class="field">program_code</span>. Test both:</p>
+      <table>
+        <tr><th>Join type</th><th>What happens</th></tr>
+        <tr><td>Inner</td><td>Students whose program code isn't in the lookup vanish entirely</td></tr>
+        <tr><td>Left</td><td>They stay, with nulls in every program field</td></tr>
+      </table>
+      <p>Find the unmatched codes. There are two of them, and 8 students carry them.</p>
+      <p>Keep the left join and make the gap visible rather than silent:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>IFNULL([program_name], "Unknown Program")</pre></div>
+      <div class="warn"><span class="lead">Defend this in your memo</span>
+      <p>An inner join here quietly deletes 8 people from every count you build. That's not a cleaning decision, it's an editorial one — and unlike a visible "Unknown" bar, nobody reviewing your dashboard can tell it happened.</p></div>
+      <div class="check" data-answer="8" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>How many student rows have no matching program in the lookup?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="How many student rows have no matching program in the lookup?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>8</strong></p><p>Check the join summary panel on the left of the data source page — it reports excluded rows for each side of the join.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-7">&larr; Previous</a><a class="next" href="#step-9">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-9" data-i="9">
+    <p class="eyebrow">Module 2 &middot; Step 4 of 8</p>
+    <h2>Union files with mismatched schemas</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+      <p>Connect <span class="field">students_cohort_2020.csv</span>. Drag <span class="field">students_cohort_2021.csv</span> directly beneath it until <strong>New Union</strong> appears. Add the 2022 file to the same union.</p>
+      <p>The 2022 file does not match. Three separate problems:</p>
+      <table>
+        <tr><th>Problem</th><th>Handling</th></tr>
+        <tr><td><span class="field">entry_term</span> vs <span class="field">start_term</span></td><td>Merge the two fields — same thing, different name</td></tr>
+        <tr><td><span class="field">enrollment_intensity</span> vs <span class="field">attendance_status</span></td><td>Merge the same way</td></tr>
+        <tr><td><span class="field">first_generation</span> absent from 2022</td><td>Leave it. Nulls for 425 students — and that's a reporting limitation, not a fix</td></tr>
+      </table>
+      <p>Check the generated <strong>Table Name</strong> and <strong>File Paths</strong> fields. Keep them: they're how you prove afterwards which cohort a row came from.</p>
+      <div class="note"><span class="lead">Write this down for the memo</span>
+      <p>Because <span class="field">first_generation</span> only exists in two of three files, any first-generation analysis you build can only cover the 2020 and 2021 cohorts. State that as a scope limit rather than letting the nulls quietly drag your percentages down.</p></div>
+      <div class="check" data-answer="1413" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Row count immediately after the three-file union?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Row count immediately after the three-file union?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1413</strong></p><p>493 + 495 + 425. It's more than the number of actual students — the next step deals with why.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-8">&larr; Previous</a><a class="next" href="#step-10">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-10" data-i="10">
+    <p class="eyebrow">Module 2 &middot; Step 5 of 8</p>
+    <h2>Find and fix three quality problems</h2>
+    <p class="stepmeta">Tableau Desktop · 30 min</p>
+    
+    
+      <p>Your exercise requires at least three documented data-quality conditions. This data has more than three; here are the ones worth writing up.</p>
+      <h3>1 — Inconsistent categories</h3>
+      <p><span class="field">sex</span> holds eight spellings of two values. <span class="field">residency</span> holds eleven spellings of three. Any filter or group-by splits the same people across multiple buckets.</p>
+      <p>Keep the original field and build a cleaned one beside it:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>UPPER(TRIM([sex]))</pre></div>
+      <p>That collapses spacing and case but not wording, so finish with an <strong>alias</strong> or a <strong>group</strong> to fold MALE into M.</p>
+      <h3>2 — Whitespace in a join key</h3>
+      <p><span class="field">program_code</span> and <span class="field">campus_code</span> carry leading and trailing spaces on some rows. Invisible on screen, fatal to a join — <span class="field">"CSCI "</span> does not match <span class="field">"CSCI"</span>.</p>
+      <div class="formula"><button class="copy">Copy</button><pre>UPPER(TRIM([program_code]))</pre></div>
+      <h3>3 — Numbers stored as text, and impossible values</h3>
+      <p><span class="field">undergrad_gpa</span> contains blanks and <span class="field">N/A</span>, which forces the whole field to string. Change the type to Number (decimal) and the non-numeric entries become null. Then handle the values above 4.0:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>IF [undergrad_gpa] > 4.0 THEN NULL ELSE [undergrad_gpa] END</pre></div>
+      <div class="warn"><span class="lead">Document before and after</span>
+      <p>For each issue your memo needs: the affected field, how it would distort a filter or calculation, what you did, and the counts either side of the fix. "I cleaned the data" earns nothing.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-9">&larr; Previous</a><a class="next" href="#step-11">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-11" data-i="11">
+    <p class="eyebrow">Module 2 &middot; Step 6 of 8</p>
+    <h2>Deduplicate — in the right order</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>The union gave you 1,413 rows but not 1,413 students. The 2021 file contains repeats — some exact, some differing only in the capitalisation of the name.</p>
+      <ol>
+        <li>Standardise the name field first: <span class="field">UPPER(TRIM([student_name]))</span>.</li>
+        <li>Then remove duplicates — or aggregate to one row per <span class="field">student_id</span>.</li>
+      </ol>
+      <div class="trap"><span class="lead">Order of operations</span>
+      <p>Deduplicate before standardising and the capitalisation variants survive, because <span class="field">"GARCIA, MARIA A."</span> and <span class="field">"Garcia, Maria A."</span> are different strings. Clean first, then dedupe. This ordering bug is quiet, common, and produces a number that looks almost right.</p></div>
+      <div class="check" data-answer="1400" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Distinct students after cleaning and deduplicating?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Distinct students after cleaning and deduplicating?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1400</strong></p><p>Thirteen rows come out. If you removed only 9, the capitalisation duplicates are still in there — go back and standardise the name field first.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-10">&larr; Previous</a><a class="next" href="#step-12">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-12" data-i="12">
+    <p class="eyebrow">Module 2 &middot; Step 7 of 8</p>
+    <h2>Check for join fan-out</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>Your exercise asks you to investigate whether a join duplicated rows through one-to-many cardinality. The aid data is where it happens.</p>
+      <p><span class="field">financial_aid.xlsx</span> has multiple rows per student — one per aid year per aid type. Join it directly to your student table and every student is repeated once per award. Any count of students, and any average of a student-level field, is now wrong.</p>
+      <h3>The fix is grain, not deletion</h3>
+      <ol>
+        <li>Aggregate the aid data to one row per student first (sum the award amounts), <em>then</em> join.</li>
+        <li>Or use a relationship and let Tableau aggregate at the right level for each view.</li>
+      </ol>
+      <div class="warn"><span class="lead">Explicitly required</span>
+      <p>Do not delete records to make totals match. Removing rows until a number looks right destroys the analysis and is the specific failure this part of the exercise is testing for.</p></div>
+      <p>One more thing to catch: roughly one student in eight has no aid record at all. Join type matters here for the same reason it did with the program lookup.</p>
+    <div class="stepnav"><a class="prev" href="#step-11">&larr; Previous</a><a class="next" href="#step-13">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-13" data-i="13">
+    <p class="eyebrow">Module 2 &middot; Step 8 of 8</p>
+    <h2>Run the quality audit</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+      <p>Build a worksheet that proves the prepared data is sound. Your exercise wants at least three field-level indicators — here's a working set.</p>
+      <table>
+        <tr><th>Indicator</th><th>How to build it</th></tr>
+        <tr><td>Record count</td><td><span class="field">COUNT([student_id])</span> vs your control total from step 1</td></tr>
+        <tr><td>Distinct count</td><td><span class="field">COUNTD([student_id])</span> — should equal record count at student grain</td></tr>
+        <tr><td>Null count</td><td><span class="field">SUM(IF ISNULL([undergrad_gpa]) THEN 1 ELSE 0 END)</span></td></tr>
+        <tr><td>Min and max</td><td>Put a measure on Text twice, set to MIN and MAX. Anything impossible?</td></tr>
+        <tr><td>Duplicate keys</td><td><span class="field">COUNT([student_id]) - COUNTD([student_id])</span> — must be zero</td></tr>
+      </table>
+      <p>Then a summary view: a cleaned dimension on Rows, a numeric measure on Columns. Compare against your original totals and account for every record that was dropped, duplicated, left unmatched, or nulled.</p>
+      <div class="note"><span class="lead">Close with a verdict</span>
+      <p>State whether the data is ready for analysis. If limitations remain — the missing first-generation field, the 8 unmatched programs, the students with no aid record — name them and say how they affect interpretation. Naming a limitation is a finding, not an admission.</p></div>
+      <div class="deliv"><h3>Submit for Module 2</h3><ul>
+        <li>Packaged workbook (<code>.twbx</code>) with the connections, joins, union, calculated fields and audit views</li>
+        <li>One-to-two page technical memo: source and grain, a data model screenshot, join keys and rationale, the effect of two join configurations on row counts, three quality issues with before-and-after counts, union record counts, and remaining limitations</li>
+        <li>A line confirming the data is cleared for educational use</li>
+      </ul></div>
+    <div class="stepnav"><a class="prev" href="#step-12">&larr; Previous</a><a class="next" href="#step-14">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-14" data-i="14">
+    <p class="eyebrow">Module 3 &middot; Step 1 of 8</p>
+    <h2>Row-level versus aggregate</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+      <p>This distinction causes more wrong numbers than any other calculation topic. Build both and compare.</p>
+      <p>Connect <span class="field">mvu_student_dim.csv</span>. Create a calculated field named <strong>Aid per Credit (row)</strong>:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>[total_aid_awarded] / [credits_attempted]</pre></div>
+      <p>This computes per student, then Tableau aggregates the results. Now the aggregate version, <strong>Aid per Credit (agg)</strong>:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>SUM([total_aid_awarded]) / SUM([credits_attempted])</pre></div>
+      <p>Put <span class="field">college</span> on Rows and both fields on Columns. Set the first to <strong>Average</strong>.</p>
+      <div class="trap"><span class="lead">Why they differ</span>
+      <p>The first is an average of ratios — every student counts the same regardless of how many credits they took. The second is a ratio of sums, so students with heavier loads pull it further. Neither is wrong. Which one you want depends on whether your question is about the typical student or the typical dollar.</p></div>
+      <div class="warn"><span class="lead">The error you'll hit</span>
+      <p>"Cannot mix aggregate and non-aggregate arguments" means you wrote something like <span class="field">SUM([a]) / [b]</span>. Everything inside one calculation must sit at the same level. Wrap the loose field in an aggregation, or take the whole thing down to row level.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-13">&larr; Previous</a><a class="next" href="#step-15">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-15" data-i="15">
+    <p class="eyebrow">Module 3 &middot; Step 2 of 8</p>
+    <h2>Conditional logic: academic standing</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+      <p>Continuous measures are hard to talk about. Cohorts are easy. Connect <span class="field">mvu_term_gpa.csv</span> and create <strong>Academic Standing</strong>:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>IF [term_gpa] >= 3.70 THEN "Excellent"
+ELSEIF [term_gpa] >= 3.00 THEN "Good standing"
+ELSEIF [term_gpa] >= 2.00 THEN "Academic warning"
+ELSE "Probation"
+END</pre></div>
+      <p>Drag it to <strong>Rows</strong> and a distinct count of <span class="field">student_id</span> to <strong>Columns</strong>.</p>
+      <p>Tableau evaluates ELSEIF branches in order and stops at the first match, so ordering thresholds from high to low matters. Reverse them and everything lands in the first bucket.</p>
+      <h3>Then argue about the cutoffs</h3>
+      <p>3.0 is conventional for graduate probation, but you chose it, not the data. Every threshold in a calculated field is an editorial decision wearing a formula's clothing. Say so in your documentation.</p>
+    <div class="stepnav"><a class="prev" href="#step-14">&larr; Previous</a><a class="next" href="#step-16">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-16" data-i="16">
+    <p class="eyebrow">Module 3 &middot; Step 3 of 8</p>
+    <h2>Date calculations: measuring a gap</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>One idea on this page: <strong>DATEDIFF is subtraction for dates.</strong> Two dates go in, a number comes out, in whatever unit you ask for. Nothing about it is subtle.</p>
+   <p>Relate <span class="field">mvu_student_dim.csv</span> to <span class="field">mvu_enrollment_fact.csv</span> on <span class="field">student_id</span> — you need both, because the two dates live in different files.</p>
+   <table>
+     <tr><th>Field</th><th>Lives in</th><th>Meaning</th></tr>
+     <tr><td><span class="field">entry_date</span></td><td>student_dim</td><td>The day the student started their programme</td></tr>
+     <tr><td><span class="field">term_start_date</span></td><td>enrollment_fact</td><td>The day that term began</td></tr>
+   </table>
+   <p>Create a calculated field named <strong>Months Since Entry</strong>:</p>
+   <div class="formula"><button class="copy">Copy</button><pre>DATEDIFF('month', [entry_date], [term_start_date])</pre></div>
+   <p>Read it left to right: count the months from the student's entry date to this term's start date. A student's first term returns 0. Their term a year later returns 12.</p>
+   <h3>Why this is worth building</h3>
+   <p>The 2020 and 2022 cohorts started two years apart, so comparing them by calendar date tells you nothing useful. Converted to months since entry, every student's first term is month 0 — and a 2020 student at month 12 is directly comparable to a 2022 student at month 12.</p>
+   <p>Put <strong>Months Since Entry</strong> on Columns and average term GPA on Rows, with <span class="field">cohort_year</span> on Colour. All three cohorts now start at the same origin.</p>
+   <div class="note"><span class="lead">Sense-check every derived number</span>
+   <p>Drag the field to Text and check its range. Values should run from 0 to about 29 — the span of the data. A negative value means the two date fields are the wrong way round in the formula. A value in the thousands means a date is still typed as text and Tableau is counting days, not months.</p></div>
+   <p>That's the whole step. The next one introduces a different idea, so stop here and make sure this one works before moving on.</p>
+    <div class="stepnav"><a class="prev" href="#step-15">&larr; Previous</a><a class="next" href="#step-17">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-17" data-i="17">
+    <p class="eyebrow">Module 3 &middot; Step 4 of 8</p>
+    <h2>Level of detail: one value per student</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>This page has one idea too, and the fastest way to understand it is to watch the problem happen before you see the fix.</p>
+   <h3>Step 1 — Build the broken version on purpose</h3>
+   <p>New worksheet. Put <span class="field">student_id</span> on Rows and <span class="field">term_start_date</span> on Text, set to <strong>Maximum</strong>. You get each student's last term. Correct so far.</p>
+   <p>Now drag <span class="field">college</span> onto Rows as well.</p>
+   <p><strong>The numbers changed.</strong> Tableau didn't compute "the last term per student" — it computed the maximum over whatever the view was grouping. Add a dimension, change the grouping, change the answer.</p>
+   <div class="warn"><span class="lead">This is the default behaviour, not a bug</span>
+   <p>Ordinary aggregations are computed over whatever is currently in the view. That's usually what you want. It becomes a problem the moment you need a value that belongs to the student rather than to the view.</p></div>
+   <h3>Step 2 — Pin it with FIXED</h3>
+   <p>Create a calculated field named <strong>Last Term Attended</strong>:</p>
+   <div class="formula"><button class="copy">Copy</button><pre>{ FIXED [student_id] : MAX([term_start_date]) }</pre></div>
+   <p>Read the braces as an instruction to Tableau: <em>ignore what's on screen — group by student_id, and give me the maximum term date within each one.</em></p>
+   <table>
+     <tr><th>Part</th><th>What it says</th></tr>
+     <tr><td><span class="field">{ }</span></td><td>This is a level-of-detail expression</td></tr>
+     <tr><td><span class="field">FIXED</span></td><td>Use the grain I name, not the view's</td></tr>
+     <tr><td><span class="field">[student_id]</span></td><td>The grain: one value per student</td></tr>
+     <tr><td><span class="field">:</span></td><td>Separator — read it as "compute"</td></tr>
+     <tr><td><span class="field">MAX([term_start_date])</span></td><td>What to compute within each student</td></tr>
+   </table>
+   <p>Put the new field in the view and add or remove <span class="field">college</span> again. <strong>It holds.</strong> That stability is the entire reason LODs exist.</p>
+   <h3>Step 3 — Now combine what you have</h3>
+   <p>You have a way to measure a gap between two dates, and a way to pin a value to one per student. Put them together for time to degree:</p>
+   <div class="formula"><button class="copy">Copy</button><pre>DATEDIFF('month', [entry_date], [Last Term Attended])</pre></div>
+   <p>Use your saved <strong>Last Term Attended</strong> field rather than pasting the braces inside the DATEDIFF. It does the same thing and stays readable — and when something breaks, you can check each half separately.</p>
+   <p>Filter to <span class="field">status</span> = "Graduated" and put the new field on Text as an Average.</p>
+      <div class="check" data-answer="12" data-tol="0.6">
+        <span class="lead">Checkpoint</span>
+        <p>Median months from entry to final term, for graduates only (whole number)?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Median months from entry to final term, for graduates only (whole number)?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>12</strong></p><p>Filter status to Graduated first — without that filter you're including students still enrolled and those who withdrew early. Full-time graduates average about 13 months, part-time about 19.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-16">&larr; Previous</a><a class="next" href="#step-18">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-18" data-i="18">
+    <p class="eyebrow">Module 3 &middot; Step 5 of 8</p>
+    <h2>String calculations</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>The term code packs two facts into one string. Pull them apart.</p>
+      <div class="formula"><button class="copy">Copy</button><pre>LEFT([term_code], 4)</pre></div>
+      <p>That's the calendar year. And the season:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>IF RIGHT([term_code], 2) = "FA" THEN "Fall" ELSE "Spring" END</pre></div>
+      <p>Now something more useful — an academic year, where Fall 2020 and Spring 2021 belong together:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>IF RIGHT([term_code], 2) = "FA"
+THEN LEFT([term_code], 4) + "-" + RIGHT(STR(INT(LEFT([term_code], 4)) + 1), 2)
+ELSE STR(INT(LEFT([term_code], 4)) - 1) + "-" + RIGHT([term_code], 2)
+END</pre></div>
+      <p>Nested string functions get unreadable fast. Add a description to the field (right-click → <strong>Default Properties</strong> → <strong>Comment</strong>) so the next person — probably you, in March — can follow it.</p>
+    <div class="stepnav"><a class="prev" href="#step-17">&larr; Previous</a><a class="next" href="#step-19">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-19" data-i="19">
+    <p class="eyebrow">Module 3 &middot; Step 6 of 8</p>
+    <h2>Formatting and default properties</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+      <p>A rate rendered as 0.5379 is a number nobody can read at a glance. Fix it once, at the field, rather than on every worksheet.</p>
+      <p>Create <strong>Graduation Rate</strong>:</p>
+      <div class="formula"><button class="copy">Copy</button><pre>AVG([is_graduated])</pre></div>
+      <p>Then right-click the field → <strong>Default Properties</strong> → <strong>Number Format</strong> → <strong>Percentage</strong>, one decimal place.</p>
+      <p>Every view you build from now on inherits that format. While you're there, set a default aggregation and write a comment describing what the field means.</p>
+      <div class="note"><span class="lead">Why AVG of a 0/1 flag gives you a rate</span>
+      <p>The average of a column of ones and zeros is the proportion of ones. It's the cleanest way to compute a rate in Tableau, and it aggregates correctly at every level of detail without you writing anything further.</p></div>
+      <div class="check" data-answer="53.8" data-tol="0.15">
+        <span class="lead">Checkpoint</span>
+        <p>Overall graduation rate across all 1,400 students, as a percentage (one decimal)?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Overall graduation rate across all 1,400 students, as a percentage (one decimal)?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>53.8</strong></p><p>AVG(is_graduated) with no filters applied. Around 54% — if you're near 81% you still have a cohort filter switched on.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-18">&larr; Previous</a><a class="next" href="#step-20">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-20" data-i="20">
+    <p class="eyebrow">Module 3 &middot; Step 7 of 8</p>
+    <h2>The cohort trap</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+      <p>Take the graduation rate you just built and split it by <span class="field">cohort_year</span>.</p>
+      <p>The 2022 bar sits at zero.</p>
+      <p><strong>Stop and work out why before you read on.</strong> Is that a fact about the 2022 cohort, or a fact about the dataset?</p>
+      <details><summary>Show the answer</summary><div class="details-body">
+        <p>The data ends in Spring 2023. The 2022 cohort had two terms to complete a programme that takes four or more. Nobody could have graduated. The bar reports the boundary of data collection, not student performance.</p>
+        <p>Two defensible fixes: restrict the view to cohorts that have had time to finish, or redefine the measure as "graduated within N terms of entry" so every cohort is judged on the same window.</p>
+      </div></details>
+      <div class="trap"><span class="lead">The transferable skill</span>
+      <p>Every dataset has an edge like this. Reporting the 2022 bar as a finding would be technically accurate and completely wrong — and the chart gives you no warning whatsoever. Noticing is the skill; Tableau is just the tool.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-19">&larr; Previous</a><a class="next" href="#step-21">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-21" data-i="21">
+    <p class="eyebrow">Module 3 &middot; Step 8 of 8</p>
+    <h2>Build the summary cross-tab</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min · graded deliverable</p>
+    
+    
+      <p>Pull the module together into one table that uses at least three of your calculated fields.</p>
+      <ul>
+        <li><span class="field">college</span> and <span class="field">program_name</span> on <strong>Rows</strong></li>
+        <li>Distinct student count</li>
+        <li>Average term GPA</li>
+        <li><strong>Graduation Rate</strong>, formatted as a percentage</li>
+        <li>Average months to completion, for graduates</li>
+      </ul>
+      <p>Sort by graduation rate and read across the rows. Which programmes stand out, and is anything you're seeing explained by the cohort composition rather than the programme itself?</p>
+      <div class="deliv"><h3>Submit for Module 3</h3><ul>
+        <li>Worksheet 1 — row-level versus aggregate aid-per-credit, compared across colleges</li>
+        <li>Worksheet 2 — student counts by Academic Standing</li>
+        <li>Worksheet 3 — the summary cross-tab, using at least three calculated fields</li>
+        <li>Packaged workbook (<code>.twbx</code>) with every field named, formatted and commented</li>
+      </ul></div>
+      <p style="margin-top:22px">That's all three modules. Your workbook now covers connections and encoding, preparation and auditing, and calculation — which is the full arc of getting from a messy folder of files to something worth putting in front of a decision-maker.</p>
+    <div class="stepnav"><a class="prev" href="#step-20">&larr; Previous</a><a class="next" href="#step-22">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-22" data-i="22">
+    <p class="eyebrow">Module 4 &middot; Step 1 of 7</p>
+    <h2>Review: are you ready for Module 4?</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min · do this before continuing</p>
+    
+    
+   <p>Module 4 assumes everything from the first three modules. Table calculations sit on top of a view you've already built correctly — if the underlying model or calculation is wrong, the table calculation will be confidently wrong too, and much harder to debug.</p>
+   <p>Work through this page before you continue. It should take about twenty-five minutes. If any part of it stalls you, the link beside it takes you back to the step that covers it.</p>
+
+   <h3>Part A — Answer these without opening Tableau</h3>
+   <p>Say each answer out loud or write it down before you open the box. Recognising an answer is not the same as being able to produce one.</p>
+
+   <details><summary>1. What is the difference between a relationship and a join, and when does it matter?</summary><div class="details-body">
+     <p>A relationship keeps each table at its own grain and aggregates each one appropriately for whatever is in the view. A join flattens tables into one wide table, repeating rows from the smaller side. It matters any time you count or average something from the smaller table — student counts, averages of student-level fields, or any total that should not be multiplied by the number of related records.</p>
+     <p>Revisit: <a href="#step-7">Relationships versus joins</a></p>
+   </div></details>
+
+   <details><summary>2. Why does cleaning have to happen before deduplicating?</summary><div class="details-body">
+     <p>Duplicate detection compares strings exactly. Two records that differ only in capitalisation or trailing whitespace are different strings, so they survive a duplicate removal. Standardise the field first, then deduplicate.</p>
+     <p>Revisit: <a href="#step-11">Deduplicate — in the right order</a></p>
+   </div></details>
+
+   <details><summary>3. When do an average of ratios and a ratio of sums give different answers?</summary><div class="details-body">
+     <p>Whenever the denominator varies across records. The average of ratios weights every record equally; the ratio of sums weights records by size. The gap widens as your records become more unequal. Neither is wrong — they answer different questions.</p>
+     <p>Revisit: <a href="#step-14">Row-level versus aggregate</a></p>
+   </div></details>
+
+   <details><summary>4. What does a level-of-detail expression do that a normal calculation cannot?</summary><div class="details-body">
+     <p>It computes at a grain you specify rather than the grain of the view, and holds that grain even when the view's dimensions change. Use it when you need a per-entity value — a first date, a maximum, an entity total — inside a view that is broken out by something else.</p>
+     <p>Revisit: <a href="#step-16">Date calculations</a></p>
+   </div></details>
+
+   <details><summary>5. Why did the 2022 cohort show a zero percent graduation rate?</summary><div class="details-body">
+     <p>The data ends in Spring 2023. That cohort had two terms to complete a multi-year programme, so nobody could have graduated. The chart is reporting the boundary of data collection, not student performance.</p>
+     <p>Revisit: <a href="#step-20">The cohort trap</a></p>
+   </div></details>
+
+   <h3>Part B — Build this in one worksheet</h3>
+   <p>One view that touches all three modules. If you can build it in fifteen minutes without notes, you're ready.</p>
+   <ol>
+     <li>Connect <span class="field">mvu_student_dim.csv</span> and relate <span class="field">mvu_enrollment_fact.csv</span> on <span class="field">student_id</span>. Relationship, not join.</li>
+     <li>Create a calculated field for graduation rate: <span class="field">AVG([is_graduated])</span>, formatted as a percentage with one decimal place.</li>
+     <li>Put <span class="field">college</span> on Rows.</li>
+     <li>Add distinct student count, average <span class="field">undergrad_gpa</span>, and your graduation rate to Columns.</li>
+     <li>Filter to the 2020 and 2021 cohorts only — and be able to say why that filter belongs there.</li>
+     <li>Sort descending by graduation rate.</li>
+   </ol>
+
+   <div class="note"><span class="lead">Check yourself as you go</span>
+   <p>If your distinct student count comes out above 1,400, you built a join instead of a relationship. If your graduation rate reads 0.538 rather than 53.8%, the default number format hasn't been set on the field. If every college shows an identical rate, the measure is probably aggregating at the wrong level.</p></div>
+      <div class="check" data-answer="975" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Distinct students remaining after filtering to the 2020 and 2021 cohorts?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Distinct students remaining after filtering to the 2020 and 2021 cohorts?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>975</strong></p><p>1,400 students less the 2022 cohort. If you're still seeing 1,400, the filter isn't applied; if you're seeing a number in the thousands, you have a join rather than a relationship.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-21">&larr; Previous</a><a class="next" href="#step-23">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-23" data-i="23">
+    <p class="eyebrow">Module 4 &middot; Step 2 of 7</p>
+    <h2>Worksheet 1 — build the base view</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>Table calculations behave differently from everything you've built so far. A calculated field is computed in the data source, before the view exists. A <strong>table calculation</strong> is computed <em>after</em> the query returns, using only what is actually in the view.</p>
+   <p>That means the same table calculation gives different answers depending on what you've put on Rows and Columns. Build the view first, deliberately.</p>
+   <ol>
+     <li>Connect <span class="field">mvu_enrollment_fact.csv</span>.</li>
+     <li><span class="field">college</span> to <strong>Rows</strong>.</li>
+     <li><span class="field">term_code</span> to <strong>Columns</strong>.</li>
+     <li>A record count to <strong>Text</strong> — see below for where to find it.</li>
+   </ol>
+   <div class="warn"><span class="lead">Where the record count lives</span>
+   <p>If you're looking for a field called <strong>Number of Records</strong>, it no longer exists. Tableau removed it in version 2020.2. Each table now carries its own count instead. Use whichever of these you prefer:</p>
+   <ul>
+     <li>In the Data pane, scroll to the bottom of the table's field list and drag <span class="field">mvu_enrollment_fact (Count)</span> into the view. This is the direct replacement.</li>
+     <li>Or drag any field that is never null — <span class="field">student_id</span> works — and set its aggregation to <strong>Count</strong>. Not Count (Distinct): that counts students, not records.</li>
+     <li>Or create a calculated field containing just <span class="field">1</span> and aggregate it with SUM. This is the old behaviour, rebuilt by hand.</li>
+   </ul>
+   <p>All three give the same number. The first is fastest; the second is worth knowing because it makes the distinction between Count and Count (Distinct) visible.</p></div>
+   <p>You now have a text table: six terms across, six colleges down. Every number in it is an enrolment count. This grid is what the table calculation will operate on.</p>
+   <div class="note"><span class="lead">Read the grid before you calculate</span>
+   <p>Note the shape of the numbers. Fall terms are roughly double the spring terms, because a new cohort enters each fall. That pattern matters in two steps' time.</p></div>
+      <div class="check" data-answer="10147" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Total enrolment records across all terms and colleges?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Total enrolment records across all terms and colleges?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>10147</strong></p><p>Add a grand total (Analysis → Totals → Show Column Grand Totals), or check the row count on the data source page. It's the full fact table.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-22">&larr; Previous</a><a class="next" href="#step-24">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-24" data-i="24">
+    <p class="eyebrow">Module 4 &middot; Step 3 of 7</p>
+    <h2>Worksheet 1 — addressing and partitioning</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+   <p>Right-click the measure pill on the Marks card → <strong>Add Table Calculation</strong>. Set the type to <strong>Running Total</strong>.</p>
+   <p>Leave <strong>Compute Using</strong> at <strong>Table (across)</strong>. Each college's row accumulates left to right across terms, and each row restarts at its own first term.</p>
+   <h3>The two words that matter</h3>
+   <table>
+     <tr><th>Term</th><th>Meaning</th></tr>
+     <tr><td><strong>Addressing</strong></td><td>The dimension the calculation moves <em>along</em>. Here, term.</td></tr>
+     <tr><td><strong>Partitioning</strong></td><td>The dimension the calculation <em>restarts</em> within. Here, college.</td></tr>
+   </table>
+   <p>Now cycle through the Compute Using options and watch the numbers move:</p>
+   <ul>
+     <li><strong>Table (across)</strong> — accumulates across terms, restarting per college. Sensible.</li>
+     <li><strong>Table (down)</strong> — accumulates down colleges within each term. Almost certainly meaningless here.</li>
+     <li><strong>Pane (down)</strong> — same, confined to each pane.</li>
+   </ul>
+   <p>Finally choose <strong>Specific Dimensions</strong> and tick <span class="field">term_code</span> only, leaving <span class="field">college</span> unticked. That states the relationship explicitly: address along term, partition by college. It produces the same result as Table (across) here — but it will keep producing the right result if someone later rearranges the view.</p>
+   <p>Finally, add the grand total the exercise asks for: <strong>Analysis</strong> → <strong>Totals</strong> → <strong>Show Column Grand Totals</strong>. That gives you the number your checkpoint compares against.</p>
+   <div class="trap"><span class="lead">Why this matters more than it looks</span>
+   <p>Table (across) is defined by the visual layout. Specific Dimensions is defined by the data. Swap two pills on a view built with Table (across) and your running total silently starts accumulating along the wrong axis. Nothing errors. The numbers just quietly become wrong.</p></div>
+      <div class="check" data-answer="10147" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Final running-total value for the last term, with a grand total across all colleges?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Final running-total value for the last term, with a grand total across all colleges?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>10147</strong></p><p>A running total that has accumulated everything must equal the total record count. If it doesn't, your addressing is partitioning something you didn't intend.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-23">&larr; Previous</a><a class="next" href="#step-25">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-25" data-i="25">
+    <p class="eyebrow">Module 4 &middot; Step 4 of 7</p>
+    <h2>Worksheet 2 — percent difference and a reference line</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>New worksheet. <span class="field">term_code</span> to <strong>Columns</strong>, your record count to <strong>Rows</strong> (the table's Count field, as in step 1). You should have a line chart of total enrolments over six terms.</p>
+   <ol>
+     <li>Right-click the measure → <strong>Quick Table Calculation</strong> → <strong>Percent Difference From</strong>.</li>
+     <li>Confirm it's set to <strong>Previous</strong> and computing along <span class="field">term_code</span>.</li>
+     <li>Right-click the axis → <strong>Add Reference Line</strong> → <strong>Constant</strong>, value 0.</li>
+   </ol>
+   <p>The first term shows null. There is nothing before it to compare against — that's correct behaviour, not a bug, and it's worth being able to explain.</p>
+   <p>The line now swings violently above and below zero. Before you interpret that as instability, ask what's driving it.</p>
+   <details><summary>What's actually happening</summary><div class="details-body">
+     <p>Enrolment roughly doubles every fall and drops every spring, because new cohorts start in fall. The percent-difference chart is measuring the academic calendar, not a trend in student demand.</p>
+     <p>A period-over-period comparison is only meaningful between comparable periods. Comparing fall to spring is comparing different things. Fall-to-fall would be the honest comparison here.</p>
+   </div></details>
+      <div class="check" data-answer="102" data-tol="1.5">
+        <span class="lead">Checkpoint</span>
+        <p>Percent difference from 2021SP to 2021FA, to the nearest whole percent?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Percent difference from 2021SP to 2021FA, to the nearest whole percent?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>102</strong></p><p>Roughly a doubling — 1,175 records rising to 2,369. If you're seeing a small number, the calculation is probably computing down rather than across.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-24">&larr; Previous</a><a class="next" href="#step-26">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-26" data-i="26">
+    <p class="eyebrow">Module 4 &middot; Step 5 of 7</p>
+    <h2>Worksheet 2 — moving average, and what it hides</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>Duplicate the previous sheet. Change the table calculation to <strong>Moving Average</strong>, set to <strong>2 prior periods plus the current one</strong>, matching the exercise.</p>
+   <p>The sawtooth flattens. The chart looks calmer and more professional.</p>
+   <div class="warn"><span class="lead">Ask the harder question</span>
+   <p>A moving average across fall and spring terms averages two genuinely different things into one number. The volatility you removed was real information about how the academic year works. Smoothing didn't reveal a trend — it concealed a pattern.</p></div>
+   <p>Smoothing is legitimate when the fluctuation is noise. It's misleading when the fluctuation is structure. Here it's structure, and the correct fix is to compare like periods rather than average across unlike ones.</p>
+   <p>Build the honest version: filter to fall terms only, then apply percent difference. Three points instead of six, but every comparison is valid.</p>
+   <div class="note"><span class="lead">This is your Worksheet 2</span>
+   <p>Keep both versions — the percent-difference chart and the moving-average version beside it. Your caption compares them.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-25">&larr; Previous</a><a class="next" href="#step-27">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-27" data-i="27">
+    <p class="eyebrow">Module 4 &middot; Step 6 of 7</p>
+    <h2>Worksheet 3 — a parameter, several metrics</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+   <p>A parameter is a single user-controlled value. On its own it does nothing at all — it only matters once a calculated field reads it.</p>
+   <ol>
+     <li>Right-click in the Data pane → <strong>Create</strong> → <strong>Parameter</strong>.</li>
+     <li>Name it <strong>Select Metric</strong>, data type <strong>String</strong>.</li>
+     <li>Allowable values → <strong>List</strong>. Enter: <span class="field">Headcount</span>, <span class="field">Graduation Rate</span>, <span class="field">Average Aid</span>.</li>
+   </ol>
+   <p>Now the calculated field that reads it. Connect <span class="field">mvu_student_dim.csv</span> and create <strong>Dynamic Measure</strong>:</p>
+   <div class="formula"><button class="copy">Copy</button><pre>CASE [Select Metric]
+WHEN "Headcount"       THEN COUNTD([student_id])
+WHEN "Graduation Rate" THEN AVG([is_graduated])
+WHEN "Average Aid"     THEN AVG([total_aid_awarded])
+END</pre></div>
+   <p>Right-click the parameter → <strong>Show Parameter</strong>. Put <span class="field">college</span> on Rows and <strong>Dynamic Measure</strong> on Columns, then switch metrics from the dropdown.</p>
+   <div class="warn"><span class="lead">Every branch must return the same data type</span>
+   <p>All three branches above return numbers, which is what makes the CASE valid. Mixing a number and a string across branches fails. So does mixing an aggregate with a non-aggregate — the same discipline from Module 3 applies here.</p></div>
+   <div class="note"><span class="lead">The honest limitation</span>
+   <p>One axis, three metrics on wildly different scales — a headcount in the hundreds, a rate between 0 and 1, a dollar amount in the thousands. The axis rescales, but the number format can't follow. This is the standard trade-off of dynamic measures, and naming it is better than pretending it isn't there.</p></div>
+      <div class="check" data-answer="1400" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>With Headcount selected, what is the total across all colleges?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="With Headcount selected, what is the total across all colleges?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1400</strong></p><p>Every student appears once. Graduation Rate should read about 0.538 overall. If Headcount shows 10,147 you are counting enrolment rows rather than students — check that the branch uses COUNTD.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-26">&larr; Previous</a><a class="next" href="#step-28">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-28" data-i="28">
+    <p class="eyebrow">Module 4 &middot; Step 7 of 7</p>
+    <h2>Your three captions, and what to submit</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+   <p>The exercise has no memo. Instead each worksheet carries a <strong>caption</strong> — one or two sentences answering one question, written while the view is in front of you.</p>
+   <p>Turn it on with <strong>Worksheet</strong> → <strong>Show Caption</strong>, then double-click the area below the view to edit it.</p>
+   <p>Use the caption rather than an annotation or a title: it sits outside the chart, can't be dragged over your data, and expands to fit what you write.</p>
+   <table>
+     <tr><th>Sheet</th><th>What your caption must answer</th></tr>
+     <tr><td><strong>Worksheet 1</strong></td><td>Which dimension does the calculation move along, and which does it restart within? Which Compute Using option was meaningless, and why?</td></tr>
+     <tr><td><strong>Worksheet 2</strong></td><td>What causes the ±100% swings? Did the moving average reveal a trend or conceal a pattern? If the periods aren't comparable, which comparison would be valid?</td></tr>
+     <tr><td><strong>Worksheet 3</strong></td><td>The three metrics sit on very different scales. What problem does that create for a reader, and how did you handle it?</td></tr>
+   </table>
+   <div class="warn"><span class="lead">Worksheet 2 carries 25% on its own</span>
+   <p>A caption saying the moving average "made the trend clearer" does not earn full marks. That question is the point of the exercise — the other two assess whether you can operate the software.</p></div>
+   <div class="note"><span class="lead">Before you submit</span>
+   <p>Open each sheet and confirm the caption is actually showing. A caption toggled off still holds your text but won't be visible when your instructor opens the workbook.</p></div>
+   <div class="deliv"><h3>Submit for Exercise 4</h3><ul>
+     <li>Worksheet 1 — running total, scoped through Specific Dimensions rather than Table (across)</li>
+     <li>Worksheet 2 — percent difference with a zero reference line, plus the moving-average version</li>
+     <li>Worksheet 3 — a parameter-driven view switching between three metrics</li>
+     <li>A visible caption on each</li>
+     <li>Packaged workbook (<code>.twbx</code>). No memo.</li>
+   </ul></div>
+   <details><summary>Optional: dynamic Top N</summary><div class="details-body">
+     <p>Not required for the exercise, but worth ten minutes if you want it. Create an integer parameter with a range of 5 to 20, then apply it as a Top N filter on <span class="field">program_name</span> instead of typing a fixed number.</p>
+     <p>Add a rank calculation to the same view and slide the control — the ranks renumber, because a table calculation only sees rows that survived filtering. Then convert the filter to a <strong>context filter</strong> and watch the numbers change again.</p>
+   </div></details>
+    <div class="stepnav"><a class="prev" href="#step-27">&larr; Previous</a><a class="next" href="#step-29">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-29" data-i="29">
+    <p class="eyebrow">Module 5 &middot; Step 1 of 6</p>
+    <h2>Build the three views you&#x27;ll assemble</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>A dashboard is only as good as the views on it, so build these three first. Connect <span class="field">mvu_student_dim.csv</span> — all three come from that one file.</p>
+   <div class="note"><span class="lead">Using the starter workbook?</span>
+   <p>The Exercise 5 starter already contains these three sheets, built and named. If you have it, skim this step to see how they were made and go straight to the next one.</p></div>
+   <h3>Sheet 1 — Students by College</h3>
+   <ol>
+     <li><span class="field">college</span> to <strong>Rows</strong>.</li>
+     <li><span class="field">student_id</span> to <strong>Columns</strong> → right-click the pill → <strong>Measure</strong> → <strong>Count (Distinct)</strong>.</li>
+     <li>Sort descending with the toolbar button.</li>
+     <li>Rename the sheet tab: <span class="field">Headcount by College</span></li>
+   </ol>
+   <h3>Sheet 2 — Graduation Rate by Cohort</h3>
+   <ol>
+     <li>New worksheet. <span class="field">cohort_year</span> to <strong>Columns</strong> → right-click → <strong>Discrete</strong>.</li>
+     <li><span class="field">is_graduated</span> to <strong>Rows</strong> → right-click → <strong>Measure</strong> → <strong>Average</strong>.</li>
+     <li>In the Data pane, right-click <span class="field">is_graduated</span> → <strong>Default Properties</strong> → <strong>Number Format</strong> → <strong>Percentage</strong>, 1 decimal.</li>
+     <li>Rename the tab: <span class="field">Graduation Rate by Cohort</span></li>
+   </ol>
+   <h3>Sheet 3 — Withdrawal by Intensity</h3>
+   <ol>
+     <li>New worksheet. <span class="field">enrollment_intensity</span> to <strong>Rows</strong>.</li>
+     <li><span class="field">is_withdrawn</span> to <strong>Columns</strong> → <strong>Measure</strong> → <strong>Average</strong>, formatted as a percentage.</li>
+     <li>Rename the tab: <span class="field">Withdrawal by Intensity</span></li>
+   </ol>
+   <div class="note"><span class="lead">Check all three before continuing</span>
+   <p>Headcount: Science &amp; Engineering 393, Business 289, Liberal Arts 277, Health Sciences 234, Education 199, Unassigned 8. Graduation rate: 81.3%, 73.0%, 0.0%. Withdrawal: full-time 8.3%, part-time 26.1%.</p></div>
+      <div class="check" data-answer="393" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>Distinct students in the College of Science & Engineering?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="Distinct students in the College of Science &amp; Engineering?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>393</strong></p><p>Largest bar on sheet 1. If your total across all colleges isn't 1,400, check that the measure is Count (Distinct) and not Count.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-28">&larr; Previous</a><a class="next" href="#step-30">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-30" data-i="30">
+    <p class="eyebrow">Module 5 &middot; Step 2 of 6</p>
+    <h2>Containers, not floating objects</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+   <p><strong>Dashboard</strong> → <strong>New Dashboard</strong>. Under Size, choose <strong>Fixed size</strong> → <strong>Desktop Browser (1000 × 800)</strong>.</p>
+   <p>Fixed size first. Designing at Automatic means every element shifts as you resize the window, and you never quite know what your reader will see.</p>
+   <h3>Build the frame before you add content</h3>
+   <ol>
+     <li>From the <strong>Objects</strong> panel at the bottom left, drag a <strong>Vertical</strong> container onto the empty canvas.</li>
+     <li>Drag a <strong>Horizontal</strong> container into the top of it. This row will hold two views side by side.</li>
+     <li>Drag <span class="field">Headcount by College</span> into the horizontal container.</li>
+     <li>Drag <span class="field">Withdrawal by Intensity</span> in beside it.</li>
+     <li>Drag <span class="field">Graduation Rate by Cohort</span> into the lower half of the vertical container.</li>
+   </ol>
+   <h3>Then tidy it</h3>
+   <ol start="6">
+     <li>Select the outer container → its dropdown arrow → <strong>Distribute Contents Evenly</strong>.</li>
+     <li>Select each view → <strong>Layout</strong> tab on the left → set <strong>Outer Padding</strong> to 4 on all sides.</li>
+     <li>Delete any legend that isn't telling the reader something they can't get from the axis.</li>
+   </ol>
+   <div class="trap"><span class="lead">Why containers matter</span>
+   <p>You can drag views straight onto the canvas as floating objects, and for about five minutes it feels faster. Then you resize something and everything else stays put, overlapping and misaligned. Containers hold relationships between objects; floating objects hold only coordinates. Build the frame first and the layout maintains itself.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-29">&larr; Previous</a><a class="next" href="#step-31">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-31" data-i="31">
+    <p class="eyebrow">Module 5 &middot; Step 3 of 6</p>
+    <h2>Make it interactive</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>Three views sitting together is a poster. A filter action makes it a tool.</p>
+   <ol>
+     <li><strong>Dashboard</strong> → <strong>Actions</strong> → <strong>Add Action</strong> → <strong>Filter</strong>.</li>
+     <li>Name it something readable: <span class="field">College selection</span>.</li>
+     <li><strong>Source Sheets:</strong> tick <span class="field">Headcount by College</span> only.</li>
+     <li><strong>Target Sheets:</strong> tick the other two.</li>
+     <li><strong>Run action on:</strong> <strong>Select</strong>.</li>
+     <li><strong>Clearing the selection will:</strong> <strong>Show all values</strong>.</li>
+     <li>Click <strong>OK</strong>, then click a bar on the headcount chart.</li>
+   </ol>
+   <p>The other two views should respond. Click the empty space around the bars to clear it.</p>
+   <div class="warn"><span class="lead">Two settings that cause most of the trouble</span>
+   <p><strong>Run action on Hover</strong> makes a dashboard feel unusable — views flicker as the pointer crosses them. Use Select.</p>
+   <p><strong>Clearing the selection → Exclude all values</strong> empties your targets when nothing is selected, so the dashboard looks broken on arrival. Use Show all values.</p></div>
+   <p>Try a <strong>Highlight</strong> action as well, then decide whether to keep it. Highlight dims rather than removes, which is gentler but harder to read on a small dashboard.</p>
+      <div class="check" data-answer="289" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>With College of Business selected, what does the headcount read?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="With College of Business selected, what does the headcount read?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>289</strong></p><p>If the number doesn't change when you click, the action's source sheet is wrong. If the other views don't change, the target sheets aren't ticked.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-30">&larr; Previous</a><a class="next" href="#step-32">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-32" data-i="32">
+    <p class="eyebrow">Module 5 &middot; Step 4 of 6</p>
+    <h2>What did you leave out?</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>This step has no new mechanics. It's the one that separates a dashboard from a pile of charts.</p>
+   <p>Look at what you've built and take things away:</p>
+   <ul>
+     <li>Every legend that repeats what an axis already says.</li>
+     <li>Gridlines that aren't helping anyone read a value.</li>
+     <li>Titles that restate the obvious. <em>Students by College</em> above a chart of students by college is a wasted line.</li>
+     <li>Any view that doesn't serve the dashboard's single question.</li>
+     <li>Decimal places nobody needs. 53.8% is fine; 53.79% is noise.</li>
+   </ul>
+   <p>Then answer this in one sentence, for yourself: <strong>what question does this dashboard answer in thirty seconds?</strong></p>
+   <div class="note"><span class="lead">The test that matters</span>
+   <p>If you can't name the question, your reader certainly can't. A dashboard that answers three questions adequately is usually worse than one that answers a single question well — because the reader has to work out which one you meant.</p></div>
+   <p>Add a <strong>Text</strong> object from the Objects panel and write the question at the top of the dashboard. If it feels redundant, that's a good sign — it means the layout is already communicating it.</p>
+    <div class="stepnav"><a class="prev" href="#step-31">&larr; Previous</a><a class="next" href="#step-33">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-33" data-i="33">
+    <p class="eyebrow">Module 5 &middot; Step 5 of 6</p>
+    <h2>Story points</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+   <p>A dashboard lets a reader explore. A story tells them what you found. Different jobs, and the difference matters: a story removes the reader's freedom in exchange for clarity.</p>
+   <ol>
+     <li>Click the <strong>New Story</strong> tab at the bottom of the workspace.</li>
+     <li>Drag your dashboard onto the canvas. That's story point 1.</li>
+     <li>Click the caption box above the view and replace the placeholder with a sentence stating your headline finding.</li>
+     <li>Click <strong>Blank</strong> to add story point 2. Drag the dashboard in again, then apply a filter — part-time only, or a single cohort.</li>
+     <li>Write a caption saying what changed and why it matters.</li>
+     <li>Add a third point ending with what you'd recommend someone actually do.</li>
+   </ol>
+   <div class="warn"><span class="lead">Captions are not titles</span>
+   <p>"Graduation rate by cohort" labels a chart. "Part-time students withdraw at three times the full-time rate" states a finding. The second is a story point; the first is a wasted slide.</p></div>
+   <p>Three points is usually enough. Each one should earn its place by changing what the reader believes.</p>
+    <div class="stepnav"><a class="prev" href="#step-32">&larr; Previous</a><a class="next" href="#step-34">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-34" data-i="34">
+    <p class="eyebrow">Module 5 &middot; Step 6 of 6</p>
+    <h2>The story that misleads</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>Look at the graduation rate chart in your dashboard. The 2022 bar sits at zero.</p>
+   <p>Now imagine building a story around it: three points, clean captions, a clear downward arc. <em>Graduation rates have collapsed.</em> It would be persuasive, professionally built, and completely wrong — the 2022 cohort had two terms of a multi-year programme, and nobody could have graduated.</p>
+   <div class="trap"><span class="lead">The thing worth carrying out of this module</span>
+   <p>Every skill in this module makes you more persuasive. None of them makes you more correct. A story point strips away the reader's ability to check you, which means the obligation to be right moves entirely onto you.</p></div>
+   <h3>Fix your own story</h3>
+   <ol>
+     <li>Check whether any of your captions claim something the data doesn't support.</li>
+     <li>Where a chart could be misread, say so in the caption rather than hoping nobody notices.</li>
+     <li>Add one sentence somewhere in your story naming a limitation — the 2022 cohort, the 8 unmatched programmes, the students with no aid record.</li>
+   </ol>
+   <p><strong>Ask yourself:</strong> what might a stakeholder wrongly conclude from your story, and what would you say out loud to prevent it?</p>
+   <div class="deliv"><h3>Submit for Exercise 5</h3><ul>
+     <li><strong>Deliverable 1</strong> — a dashboard built with layout containers, consistent padding, and a working filter action</li>
+     <li><strong>Deliverable 2</strong> — a three-point story with captions that state findings rather than label charts</li>
+     <li>A caption naming what you left out of the dashboard and why</li>
+     <li>A caption naming what a reader might wrongly conclude from your story</li>
+     <li>Packaged workbook (<code>.twbx</code>). No memo, and no device layouts required.</li>
+   </ul></div>
+   <p style="margin-top:22px">That's all five modules. You've gone from a folder of broken files to a narrative someone would act on — which is the whole arc of the work, and the reason the judgment matters more than the clicking.</p>
+    <div class="stepnav"><a class="prev" href="#step-33">&larr; Previous</a><a class="next" href="#step-35">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-35" data-i="35">
+    <p class="eyebrow">Module 6 &middot; Step 1 of 5</p>
+    <h2>Turn coordinates into geometry</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>Latitude and longitude are just numbers. Tableau will happily plot them, but none of the spatial functions in this module will accept them until you convert them into <strong>spatial objects</strong>.</p>
+   <ol>
+     <li><strong>Connect</strong> → <strong>Text file</strong> → <span class="field">mvu_student_locations.csv</span>, or open the Exercise 6 starter workbook, which already has it connected.</li>
+     <li>Check the four coordinate fields are typed as Number (decimal).</li>
+     <li>Set <span class="field">student_id</span> to a <strong>Dimension</strong>.</li>
+   </ol>
+   <p>Create two calculated fields. Every later step depends on them.</p>
+   <div class="formula"><button class="copy">Copy</button><pre>Home Point = MAKEPOINT([home_latitude], [home_longitude])</pre></div>
+   <div class="formula"><button class="copy">Copy</button><pre>Campus Point = MAKEPOINT([campus_latitude], [campus_longitude])</pre></div>
+   <p>Both fields appear with a small globe icon, marking them as spatial rather than numeric.</p>
+   <div class="note"><span class="lead">What this file holds</span>
+   <p>One row per student: their home city and coordinates, plus the campus they're assigned to and its coordinates. 1,400 students across 33 cities and 8 states. Three campuses — Main in Denton, Riverside in Waco, and Online, which carries an Austin address for administrative purposes.</p>
+   <p>Hold on to that last detail. It matters in two steps' time.</p></div>
+      <div class="check" data-answer="1400" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>How many rows are in the locations file?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="How many rows are in the locations file?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1400</strong></p><p>One per student, matching the student dimension table. If you see a different number, check you opened mvu_student_locations.csv rather than the enrolment file.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-34">&larr; Previous</a><a class="next" href="#step-36">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-36" data-i="36">
+    <p class="eyebrow">Module 6 &middot; Step 2 of 5</p>
+    <h2>Density, and what it really shows</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <ol>
+     <li>Drag <span class="field">Home Point</span> onto the empty canvas. A map appears, one mark per student.</li>
+     <li>On the Marks card, change the mark type from Automatic to <strong>Density</strong>.</li>
+     <li>Click <strong>Color</strong> and adjust <strong>Intensity</strong> until the clusters read clearly without blowing out.</li>
+     <li><strong>Map</strong> → <strong>Map Layers</strong> → switch the background style to something plain. A detailed basemap competes with your data.</li>
+   </ol>
+   <h3>Add the campuses as a second layer</h3>
+   <ol start="5">
+     <li>Drag <span class="field">Campus Point</span> onto the map. A drop target labelled <strong>Add a Marks Layer</strong> appears at the top left — drop it there, not on the existing marks.</li>
+     <li>On the new layer's Marks card, set the mark type to <strong>Shape</strong>, choose something distinct, and increase the size.</li>
+     <li>Drag <span class="field">campus_name</span> to <strong>Label</strong> on that layer.</li>
+   </ol>
+   <p>The heaviest density sits over Dallas–Fort Worth, with a second cluster around Waco.</p>
+   <div class="trap"><span class="lead">Now ask the harder question</span>
+   <p>Does this map show where the university recruits well?</p>
+   <p>No. It shows where people live. Dallas–Fort Worth glows because nearly eight million people live there. To say anything about recruitment you would need students as a share of the eligible population in each metro — a rate, not a count.</p>
+   <p>This is the denominator problem from Module 3, wearing a map. Density maps are the most common place analysts forget it, because the visual is so persuasive.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-35">&larr; Previous</a><a class="next" href="#step-37">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-37" data-i="37">
+    <p class="eyebrow">Module 6 &middot; Step 3 of 5</p>
+    <h2>Distance and service areas</h2>
+    <p class="stepmeta">Tableau Desktop · 25 min</p>
+    
+    
+   <p>New worksheet. Two calculations, then a layered map.</p>
+   <div class="formula"><button class="copy">Copy</button><pre>Distance to Campus = DISTANCE([Home Point], [Campus Point], 'miles')</pre></div>
+   <div class="formula"><button class="copy">Copy</button><pre>Within Service Area =
+IF [Distance to Campus] &lt;= 50 THEN "Within 50 miles"
+ELSE "Beyond 50 miles" END</pre></div>
+   <ol>
+     <li>Drag <span class="field">Home Point</span> onto the canvas.</li>
+     <li>Drag <span class="field">Within Service Area</span> to <strong>Color</strong>.</li>
+     <li>Create one more field:</li>
+   </ol>
+   <div class="formula"><button class="copy">Copy</button><pre>Service Area = BUFFER([Campus Point], 50, 'miles')</pre></div>
+   <ol start="4">
+     <li>Drag <span class="field">Service Area</span> onto the map and drop it on <strong>Add a Marks Layer</strong>.</li>
+     <li>On that layer, click <strong>Color</strong> and drop opacity to about 25%.</li>
+     <li>If the buffer covers your points, reorder the layers in the Marks panel so the buffer sits underneath.</li>
+   </ol>
+   <p>Break the result down by campus — drag <span class="field">campus_name</span> to Rows on a duplicate sheet with <span class="field">Within Service Area</span> on Color.</p>
+   <table>
+     <tr><th>Campus</th><th>Students</th><th>Within 50 miles</th></tr>
+     <tr><td>Main</td><td>721</td><td>720</td></tr>
+     <tr><td>Riverside</td><td>405</td><td>396</td></tr>
+     <tr><td>Online</td><td>274</td><td>38</td></tr>
+   </table>
+   <div class="warn"><span class="lead">Before you call the Online result a problem</span>
+   <p>Only 38 of 274 Online students live within 50 miles of the Austin address. That looks alarming — until you remember nobody commutes to an online programme. The Austin coordinates are an administrative record, not a destination.</p>
+   <p>The buffer measures commuting distance. Applied to a population that doesn't commute, it produces a number that is arithmetically correct and completely meaningless.</p></div>
+      <div class="check" data-answer="1154" data-tol="0">
+        <span class="lead">Checkpoint</span>
+        <p>How many of the 1,400 students live within 50 miles of their campus?</p>
+        <div class="check-row js-only">
+          <input type="text" inputmode="decimal" placeholder="Your number" aria-label="How many of the 1,400 students live within 50 miles of their campus?">
+          <button type="button" class="cbtn">Check</button>
+          <span class="verdict"></span>
+        </div>
+        <details class="cp-answer">
+          <summary>Show the expected answer</summary>
+          <div class="details-body"><p><strong>1154</strong></p><p>720 + 396 + 38. If your number is far higher, check that DISTANCE is measuring to each student's own campus rather than to a single point.</p></div>
+        </details>
+      </div>
+    <div class="stepnav"><a class="prev" href="#step-36">&larr; Previous</a><a class="next" href="#step-38">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-38" data-i="38">
+    <p class="eyebrow">Module 6 &middot; Step 4 of 5</p>
+    <h2>Origin-destination flows</h2>
+    <p class="stepmeta">Tableau Desktop · 20 min</p>
+    
+    
+   <p>New worksheet. One calculation draws a line between two spatial points.</p>
+   <div class="formula"><button class="copy">Copy</button><pre>Commute Line = MAKELINE([Home Point], [Campus Point])</pre></div>
+   <ol>
+     <li>Drag <span class="field">Commute Line</span> onto the canvas.</li>
+     <li>Drag <span class="field">student_id</span> to <strong>Detail</strong> so each line renders separately. Without this you get one merged shape.</li>
+     <li>Drag <span class="field">campus_name</span> to <strong>Color</strong>.</li>
+     <li>Click <strong>Color</strong> and drop opacity to roughly 30%, so overlapping corridors are readable rather than a solid block.</li>
+     <li>Filter to one campus at a time to see each catchment on its own.</li>
+   </ol>
+   <p>Main and Riverside produce tight fans. Online produces long lines reaching across Texas and out to Chicago and Phoenix.</p>
+   <div class="trap"><span class="lead">The third trap in a row, and the same one</span>
+   <p><span class="field">MAKELINE</span> draws a line whether or not anyone travels it. Those long Online lines represent enrolment relationships, not journeys. Nobody drives from Chicago to Austin for a class that happens online.</p>
+   <p>A flow map implies movement. When the movement isn't real, the chart is a visual fiction — competently built, professionally rendered, and false. Either exclude that campus or relabel the chart to say what it actually shows.</p></div>
+    <div class="stepnav"><a class="prev" href="#step-37">&larr; Previous</a><a class="next" href="#step-39">Next step &rarr;</a></div>
+  </section>
+
+  <section class="step-card" id="step-39" data-i="39">
+    <p class="eyebrow">Module 6 &middot; Step 5 of 5</p>
+    <h2>What maps do to readers</h2>
+    <p class="stepmeta">Tableau Desktop · 15 min</p>
+    
+    
+   <p>Three maps, three different ways of being wrong, one underlying cause.</p>
+   <table>
+     <tr><th>Map</th><th>What it appears to show</th><th>What it actually shows</th></tr>
+     <tr><td>Density</td><td>Where recruitment succeeds</td><td>Where people live</td></tr>
+     <tr><td>Buffer</td><td>Unmet demand for a campus</td><td>Distance to a point nobody travels to</td></tr>
+     <tr><td>Flow lines</td><td>Commuting corridors</td><td>Enrolment relationships</td></tr>
+   </table>
+   <p>None of these is a Tableau error. Every calculation is correct. The gap is between what the geometry measures and what a reader assumes it measures — and maps invite that gap more than any other chart type, because they look like the territory rather than like a model of it.</p>
+   <h3>Fix your own three sheets</h3>
+   <ol>
+     <li>Retitle each one to say what it shows rather than what it might be taken to show. "Where students live" beats "Recruitment density".</li>
+     <li>Add a caption naming the limitation — <strong>Worksheet</strong> → <strong>Show Caption</strong>.</li>
+     <li>On the buffer and flow sheets, either filter out the Online campus or say plainly in the caption why it's included.</li>
+   </ol>
+   <div class="deliv"><h3>Submit for Exercise 6</h3><ul>
+     <li><strong>Worksheet 1</strong> — a density map of student homes with campus locations as a second layer</li>
+     <li><strong>Worksheet 2</strong> — a service-area map using <code>DISTANCE</code> and <code>BUFFER</code>, with the within/beyond split visible</li>
+     <li><strong>Worksheet 3</strong> — a flow map built with <code>MAKELINE</code></li>
+     <li>A caption on each naming what the map does and does not demonstrate</li>
+     <li>Packaged workbook (<code>.twbx</code>). No memo.</li>
+   </ul></div>
+   <p style="margin-top:22px">That's all six modules. You started with ten broken files and finished with maps someone might act on — which is why the judgment has mattered more than the clicking at every step.</p>
+    <div class="stepnav"><a class="prev" href="#step-38">&larr; Previous</a><span class="next disabled">End of the labs</span></div>
+  </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step-card'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.raillink'));
+  var bar = document.getElementById('pbar'), label = document.getElementById('plabel');
+  var modl = document.getElementById('pmod'), toggle = document.getElementById('viewtoggle');
+  var N = steps.length, cur = 0, showAll = false, seen = {0:1};
+
+  document.body.classList.add('js-on');
+  toggle.style.display = 'inline-block';
+  document.querySelector('.keyhint').style.display = 'block';
+  Array.prototype.forEach.call(document.querySelectorAll('.check-row'), function(r){ r.style.display = 'flex'; });
+  Array.prototype.forEach.call(document.querySelectorAll('.formula .copy'), function(b){ b.style.display = 'block'; });
+  Array.prototype.forEach.call(document.querySelectorAll('.formula pre'), function(p){ p.style.paddingRight = '92px'; });
+
+  function paint(){
+    if(showAll){
+      steps.forEach(function(s){ s.style.display = 'block'; });
+    } else {
+      steps.forEach(function(s, i){ s.style.display = (i === cur ? 'block' : 'none'); });
+    }
+    links.forEach(function(a, i){
+      a.classList.toggle('current', i === cur && !showAll);
+      a.classList.toggle('done', !!seen[i] && i !== cur);
+    });
+    bar.style.width = (((cur + 1) / N) * 100) + '%';
+    label.textContent = showAll ? 'All ' + N + ' steps' : 'Step ' + (cur + 1) + ' of ' + N;
+    modl.textContent = steps[cur].querySelector('.eyebrow').textContent.split('\u00b7')[0].trim();
+  }
+
+  function go(i, scroll){
+    if(i < 0 || i >= N) return;
+    seen[cur] = 1; cur = i; seen[i] = 1;
+    paint();
+    if(scroll !== false){
+      if(showAll){ steps[i].scrollIntoView({behavior:'smooth', block:'start'}); }
+      else { window.scrollTo({top:0, behavior:'smooth'}); }
+    }
+  }
+
+  document.addEventListener('click', function(e){
+    var a = e.target.closest ? e.target.closest('a[href^="#step-"]') : null;
+    if(a){ e.preventDefault(); go(parseInt(a.getAttribute('href').replace('#step-',''),10)); return; }
+    var b = e.target.closest ? e.target.closest('.copy') : null;
+    if(b){
+      var txt = b.parentNode.querySelector('pre').innerText;
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(txt).then(function(){
+          b.textContent='Copied'; b.classList.add('ok');
+          setTimeout(function(){ b.textContent='Copy'; b.classList.remove('ok'); },1400);
+        });
+      }
+      return;
+    }
+    var c = e.target.closest ? e.target.closest('.cbtn') : null;
+    if(c){
+      var box = c.closest('.check'), inp = box.querySelector('input'), ver = box.querySelector('.verdict');
+      var ans = parseFloat(box.getAttribute('data-answer')), tol = parseFloat(box.getAttribute('data-tol')) || 0;
+      var v = parseFloat(String(inp.value).replace(/[, ]/g,''));
+      if(isNaN(v)){ ver.textContent = 'Enter a number first.'; ver.className = 'verdict no'; return; }
+      if(Math.abs(v - ans) <= tol){
+        ver.textContent = 'That matches. Carry on.'; ver.className = 'verdict yes';
+      } else {
+        ver.textContent = 'Not what I get \u2014 open the answer below.'; ver.className = 'verdict no';
+        var d = box.querySelector('details'); if(d) d.open = true;
+      }
+    }
+  });
+
+  toggle.addEventListener('click', function(){
+    showAll = !showAll;
+    toggle.textContent = showAll ? 'One step at a time' : 'Show all steps';
+    paint();
+    if(showAll) steps[cur].scrollIntoView({block:'start'});
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.target.tagName === 'INPUT' || showAll) return;
+    if(e.key === 'ArrowRight') go(cur + 1);
+    if(e.key === 'ArrowLeft') go(cur - 1);
+  });
+
+  if(location.hash.indexOf('#step-') === 0){
+    var i = parseInt(location.hash.replace('#step-',''),10);
+    if(!isNaN(i)) cur = Math.max(0, Math.min(N-1, i));
+  }
+  paint();
+})();
+</script>
+</body>
+</html>
