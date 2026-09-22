@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
 <title>MVU Tableau Walkthrough — Self-Paced Labs</title>
 <style>
   :root{
@@ -121,6 +122,46 @@
     .shell{grid-template-columns:1fr;padding:0}
     .step-card{display:block!important;border:none;padding:0 0 26px;page-break-after:always}
     body{background:#fff;font-size:11pt}
+  }
+
+  /* ---- safe areas ---- */
+  :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  .progress-strip{top:env(safe-area-inset-top,0px)}
+  .shell{padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}
+
+  /* ---- dark theme ---- */
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#DCE8F0; --ink-soft:#9DB3C4; --paper:#0F1B24; --surface:#16242F;
+      --rule:#2B3E4C; --rule-soft:#223441; --amber:#E0B25C; --amber-bg:#2A2416; --amber-rule:#7A6230;
+      --moss:#6FC39A; --clay:#E48A76; --clay-bg:#2E1D1A; --code-bg:#08131B;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#DCE8F0; --ink-soft:#9DB3C4; --paper:#0F1B24; --surface:#16242F;
+    --rule:#2B3E4C; --rule-soft:#223441; --amber:#E0B25C; --amber-bg:#2A2416; --amber-rule:#7A6230;
+    --moss:#6FC39A; --clay:#E48A76; --clay-bg:#2E1D1A; --code-bg:#08131B;
+  }
+  body{background:var(--paper)}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) header.masthead{background:#0A151D}
+    :root:not([data-theme="light"]) kbd,
+    :root:not([data-theme="light"]) .field{background:#223441;color:#CFE2ED;border-color:#2B3E4C}
+    :root:not([data-theme="light"]) .raillink:hover{background:#1E2F3B}
+    :root:not([data-theme="light"]) .raillink.current{background:#DCE8F0;color:#0F1B24}
+    :root:not([data-theme="light"]) .check,
+    :root:not([data-theme="light"]) details{background:#132029}
+    :root:not([data-theme="light"]) details summary:hover{background:#1E2F3B}
+    :root:not([data-theme="light"]) .check input{background:#0F1B24;color:#DCE8F0}
+    :root:not([data-theme="light"]) .check button,
+    :root:not([data-theme="light"]) .stepnav .next{background:#DCE8F0;color:#0F1B24;border-color:#DCE8F0}
+    :root:not([data-theme="light"]) .stepnav .prev{background:transparent;color:#DCE8F0;border-color:#DCE8F0}
+    :root:not([data-theme="light"]) .stepnav .prev:hover{background:#1E2F3B}
+    :root:not([data-theme="light"]) th{background:#223441;color:#DCE8F0}
+    :root:not([data-theme="light"]) tr:nth-child(even) td{background:#132029}
+    :root:not([data-theme="light"]) .viewtoggle{background:#223441;color:#DCE8F0;border-color:#2B3E4C}
+    :root:not([data-theme="light"]) .deliv{background:#0A151D}
   }
 </style>
 </head>
@@ -771,7 +812,7 @@ END</pre></div>
         <li>Worksheet 3 — the summary cross-tab, using at least three calculated fields</li>
         <li>Packaged workbook (<code>.twbx</code>) with every field named, formatted and commented</li>
       </ul></div>
-      <p style="margin-top:22px">That's all three modules. Your workbook now covers connections and encoding, preparation and auditing, and calculation — which is the full arc of getting from a messy folder of files to something worth putting in front of a decision-maker.</p>
+      <p style="margin-top:22px">That's the end of Module 3. Your workbook now covers connections and encoding, preparation and auditing, and calculation. Module 4 builds directly on all three, so it opens with a short review.</p>
     <div class="stepnav"><a class="prev" href="#step-20">&larr; Previous</a><a class="next" href="#step-22">Next step &rarr;</a></div>
   </section>
 
@@ -932,8 +973,10 @@ END</pre></div>
    <ol>
      <li>Right-click the measure → <strong>Quick Table Calculation</strong> → <strong>Percent Difference From</strong>.</li>
      <li>Confirm it's set to <strong>Previous</strong> and computing along <span class="field">term_code</span>.</li>
-     <li>Right-click the axis → <strong>Add Reference Line</strong> → <strong>Constant</strong>, value 0.</li>
+     <li>Right-click the axis → <strong>Add Reference Line</strong>. On the Value row there are two dropdowns: change the <strong>right-hand</strong> one from Average to <strong>Constant</strong>, then enter 0 and set Label to None.</li>
    </ol>
+   <div class="warn"><span class="lead">If Constant isn't in that list</span>
+   <p>It can be hidden when the field on the axis is a table calculation. Cancel, create a calculated field named <span class="field">Zero</span> containing just <span class="field">0</span>, then reopen Add Reference Line and pick <span class="field">Zero</span> in the left-hand dropdown with Average on the right. The line lands in the same place.</p></div>
    <p>The first term shows null. There is nothing before it to compare against — that's correct behaviour, not a bug, and it's worth being able to explain.</p>
    <p>The line now swings violently above and below zero. Before you interpret that as instability, ask what's driving it.</p>
    <details><summary>What's actually happening</summary><div class="details-body">
@@ -1222,7 +1265,7 @@ END</pre></div>
      <li>A caption naming what a reader might wrongly conclude from your story</li>
      <li>Packaged workbook (<code>.twbx</code>). No memo, and no device layouts required.</li>
    </ul></div>
-   <p style="margin-top:22px">That's all five modules. You've gone from a folder of broken files to a narrative someone would act on — which is the whole arc of the work, and the reason the judgment matters more than the clicking.</p>
+   <p style="margin-top:22px">That's the end of Module 5. Module 6 moves from charts to maps — where the same judgment matters even more, because a map is the most persuasive chart there is.</p>
     <div class="stepnav"><a class="prev" href="#step-33">&larr; Previous</a><a class="next" href="#step-35">Next step &rarr;</a></div>
   </section>
 
