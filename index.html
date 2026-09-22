@@ -163,6 +163,19 @@
     :root:not([data-theme="light"]) .viewtoggle{background:#223441;color:#DCE8F0;border-color:#2B3E4C}
     :root:not([data-theme="light"]) .deliv{background:#0A151D}
   }
+
+  /* ---- download button ---- */
+  .dl-row{display:flex;align-items:center;gap:18px;margin-top:18px;flex-wrap:wrap}
+  .dl-btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-size:14.5px;font-weight:650;
+    background:#F0C97C;color:#10314A;text-decoration:none;padding:11px 18px;border-radius:4px;
+    border:1px solid #F0C97C;white-space:nowrap;margin:0 18px 8px 0}
+  .dl-btn:hover{background:#F6D898}
+  .dl-btn:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+  .dl-icon{font-size:17px;line-height:1;margin-right:8px}
+  .dl-meta{font-weight:500;font-size:12px;opacity:.75;padding-left:10px;margin-left:10px;border-left:1px solid rgba(16,49,74,.3)}
+  .dl-note{margin:0;max-width:60ch;font-family:var(--sans);font-size:13.5px;color:#C3D6E2;line-height:1.5}
+  .dl-note strong{color:#EAF1F5}
+  @media print{.dl-row{display:none}}
 </style>
 </head>
 <body>
@@ -172,6 +185,14 @@
     <p class="course">DIV 6380 · Advanced Visual Analytics</p>
     <h1>Tableau labs with the MVU dataset</h1>
     <p>Six self-paced modules covering visual encoding, data preparation and quality auditing, calculated fields, table calculations and parameters, dashboards with story points, and spatial analytics — all built on the Mesquite Valley University data. Work at your own pace. Nothing here is timed.</p>
+    <div class="dl-row">
+      <a class="dl-btn" href="MVU_Walkthrough_Data.zip" download>
+        <span class="dl-icon" aria-hidden="true">&#8595;</span>
+        Download the data
+        <span class="dl-meta">ZIP &middot; 690 KB</span>
+      </a>
+      <p class="dl-note">Everything the walkthrough uses: <strong>raw/</strong> for Modules 1&ndash;2, <strong>clean/</strong> for Modules 3&ndash;6. Unzip it before connecting in Tableau. You do not need these files for the graded exercises &mdash; the starter workbooks already have the data connected.</p>
+    </div>
   </div>
 </header>
 
