@@ -163,6 +163,19 @@
     :root:not([data-theme="light"]) .viewtoggle{background:#223441;color:#DCE8F0;border-color:#2B3E4C}
     :root:not([data-theme="light"]) .deliv{background:#0A151D}
   }
+  /* ---- data download ---- */
+  .dl-row{display:flex;align-items:center;gap:36px;margin-top:22px;flex-wrap:wrap}
+  .dl-btn{display:inline-flex;align-items:center;gap:18px;background:#E8C987;color:#10314A;text-decoration:none;
+    border-radius:4px;padding:14px 22px;font-family:var(--sans);flex:0 0 auto}
+  .dl-btn:hover{background:#F0D59C}
+  .dl-btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .dl-label,.dl-meta{white-space:nowrap}
+  .dl-arrow{font-size:18px;font-weight:700;line-height:1}
+  .dl-label{font-size:16px;font-weight:650;padding-right:18px;border-right:1px solid rgba(16,49,74,.3)}
+  .dl-meta{font-size:13px;letter-spacing:.04em;color:#3D5C74}
+  .dl-note{margin:0;flex:1 1 320px;font-family:var(--sans);font-size:15px;line-height:1.6;color:#C3D6E2;max-width:none!important}
+  .dl-note strong{color:#fff}
+  @media (max-width:600px){.dl-row{gap:16px}.dl-btn{width:100%;justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -172,7 +185,14 @@
     <p class="course">DIV 6380 · Advanced Visual Analytics</p>
     <h1>Tableau labs with the MVU dataset</h1>
     <p>Seven self-paced modules covering visual encoding, data preparation and quality auditing, calculated fields, table calculations and parameters, dashboards with story points, spatial analytics, and set and parameter actions — all built on the Mesquite Valley University data. Work at your own pace. Nothing here is timed.</p>
-    <p style="margin-top:12px"><a href="MVU_Walkthrough_Data.zip" style="color:#F0C97C;font-family:var(--sans);font-size:14px;font-weight:600">Download the MVU data (ZIP)</a></p>
+    <div class="dl-row">
+      <a class="dl-btn" href="MVU_Walkthrough_Data.zip" download>
+        <span class="dl-arrow" aria-hidden="true">&darr;</span>
+        <span class="dl-label">Download the data</span>
+        <span class="dl-meta">ZIP &middot; 690 KB</span>
+      </a>
+      <p class="dl-note">Everything the walkthrough uses: <strong>raw/</strong> for Modules 1&ndash;2, <strong>clean/</strong> for Modules 3&ndash;7. Unzip it before connecting in Tableau. You do not need these files for the graded exercises &mdash; the starter workbooks already have the data connected.</p>
+    </div>
   </div>
 </header>
 
