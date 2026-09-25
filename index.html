@@ -395,7 +395,7 @@
      <li><span class="field">student_id</span> to <strong>Columns</strong> as <strong>Count (Distinct)</strong>. Sort descending with the toolbar button.</li>
      <li>Drag <span class="field">enrollment_intensity</span> to <strong>Color</strong>. You now have a stacked bar.</li>
      <li>Duplicate the sheet. On the copy, also drag <span class="field">enrollment_intensity</span> to <strong>Rows</strong>, to the right of <span class="field">campus_name</span>. The segments separate into side-by-side bars.</li>
-     <li>Name the sheets <span class="field">Worksheet 1 — Stacked</span> and <span class="field">Worksheet 1 — Side by Side</span>.</li>
+     <li>Name the sheets <span class="field">1A Stacked</span> and <span class="field">1B Side by Side</span>.</li>
    </ol>
    <table>
      <tr><th>Campus</th><th>Full-Time</th><th>Part-Time</th><th>Total</th></tr>
@@ -427,7 +427,7 @@
     <h2>Worksheet 2 — the scatter plot, and what it hides</h2>
     <p class="stepmeta">Tableau Desktop · 25 min</p>
    <ol>
-     <li>New worksheet. <span class="field">credits_attempted</span> to <strong>Columns</strong>, <span class="field">credits_earned</span> to <strong>Rows</strong>.</li>
+     <li>New worksheet, named <span class="field">2 Scatter</span>. <span class="field">credits_attempted</span> to <strong>Columns</strong>, <span class="field">credits_earned</span> to <strong>Rows</strong>.</li>
    </ol>
    <p>One mark — the grand total. Tableau aggregated everything into a single point.</p>
    <ol start="2">
@@ -472,7 +472,7 @@
      <li>New worksheet. <span class="field">campus_name</span> to <strong>Columns</strong>.</li>
      <li><span class="field">is_withdrawn</span> to <strong>Rows</strong> → <strong>Measure</strong> → <strong>Average</strong>. The average of a 0/1 flag is a rate.</li>
      <li>In the Data pane, right-click <span class="field">is_withdrawn</span> → <strong>Default Properties</strong> → <strong>Number Format</strong> → <strong>Percentage</strong>, 1 decimal. Add labels.</li>
-     <li>Duplicate the sheet. On the copy, right-click the axis → <strong>Edit Axis</strong> → untick <strong>Include zero</strong> and set the range to start at 12%. Name it <span class="field">Worksheet 3 — Truncated</span>.</li>
+     <li>Duplicate the sheet. On the copy, right-click the axis → <strong>Edit Axis</strong> → untick <strong>Include zero</strong> and set the range to start at 12%. Name it <span class="field">3A Truncated</span>.</li>
    </ol>
    <p>Identical numbers. On the truncated copy, Online's bar looks about ten times Main's. The real gap is 20.1% against 12.8%.</p>
    <div class="trap"><span class="lead">The point</span>
@@ -481,7 +481,7 @@
    <ol start="5">
      <li>On the original sheet, drag <span class="field">enrollment_intensity</span> to <strong>Columns</strong> after <span class="field">campus_name</span>, and to <strong>Color</strong>.</li>
      <li>Apply Ch 7: remove gridlines and borders you don't need, and don't color by campus when the axis already names it.</li>
-     <li>Retitle the sheet with the finding, not the field names. Name it <span class="field">Worksheet 3 — Honest</span>.</li>
+     <li>Retitle the sheet with the finding, not the field names. Name it <span class="field">3B Honest</span>.</li>
    </ol>
    <table>
      <tr><th>Campus</th><th>Overall</th><th>Full-Time</th><th>Part-Time</th></tr>
@@ -524,6 +524,7 @@
    <div class="note"><span class="lead">Before you submit</span>
    <p>Open each sheet and confirm the caption is actually showing. A caption toggled off still holds your text but won't be visible when your instructor opens the workbook.</p></div>
    <div class="deliv"><h3>Submit for Exercise 1</h3><ul>
+     <li><strong>Sheet names:</strong> Start Here · 1A Stacked · 1B Side by Side · 2 Scatter · 3A Truncated · 3B Honest. The number is the worksheet; A and B are its two versions.</li>
      <li>Worksheet 1 — campus headcount by enrollment intensity, stacked and side by side</li>
      <li>Worksheet 2 — credits scatter with student_id on Detail, a trend line, and a visible overplotting fix</li>
      <li>Worksheet 3 — withdrawal rate by campus, truncated and honest, with the honest version split by enrollment intensity</li>
@@ -572,9 +573,9 @@
    <p>Connect <span class="field">mvu_student_dim.csv</span>, then drag <span class="field">mvu_enrollment_fact.csv</span> onto the canvas beside it. Tableau draws a flexible line — a <strong>relationship</strong>. Set it to <span class="field">student_id</span> = <span class="field">student_id</span>.</p>
    <ol>
      <li>New worksheet. From the <strong>student</strong> table, put three measures on Text: <span class="field">student_id</span> as <strong>Count</strong> (not Count Distinct), <span class="field">is_graduated</span> as <strong>Average</strong>, and <span class="field">total_aid_awarded</span> as <strong>Sum</strong>.</li>
-     <li>Name the sheet <span class="field">Worksheet 1 — Relationship</span>.</li>
+     <li>Name the sheet <span class="field">1A Relationship</span>.</li>
      <li>Duplicate the data source (right-click it → <strong>Duplicate</strong>). In the copy, double-click a table to open the physical layer and rebuild the link as an <strong>inner join</strong> on <span class="field">student_id</span>.</li>
-     <li>Duplicate the worksheet, then <strong>Data</strong> → <strong>Replace Data Source</strong> to point it at the joined copy. Name it <span class="field">Worksheet 1 — Join</span>.</li>
+     <li>Duplicate the worksheet, then <strong>Data</strong> → <strong>Replace Data Source</strong> to point it at the joined copy. Name it <span class="field">1B Join</span>.</li>
    </ol>
    <table>
      <tr><th></th><th>Relationship</th><th>Inner join</th></tr>
@@ -682,7 +683,7 @@
    </table>
    <p>Keep the left join and make the gap visible rather than silent:</p>
    <div class="formula"><button class="copy">Copy</button><pre>IFNULL([program_name], "Unknown Program")</pre></div>
-   <p>Build the sheet: that field on <strong>Rows</strong>, <span class="field">student_id</span> as Count (Distinct) on <strong>Columns</strong>, sorted descending. Name it <span class="field">Worksheet 2</span>.</p>
+   <p>Build the sheet: that field on <strong>Rows</strong>, <span class="field">student_id</span> as Count (Distinct) on <strong>Columns</strong>, sorted descending. Name it <span class="field">2 Programs</span>.</p>
    <div class="warn"><span class="lead">Defend this in your caption</span>
    <p>An inner join here quietly deletes people from every count you build. That's not a cleaning decision, it's an editorial one — and unlike a visible "Unknown Program" bar, nobody reviewing your dashboard can tell it happened.</p></div>
       <div class="check" data-answer="8" data-tol="0">
@@ -739,7 +740,7 @@
     <p class="eyebrow">Module 2 &middot; Step 7 of 8</p>
     <h2>Worksheet 3 — build the quality audit</h2>
     <p class="stepmeta">Tableau Desktop · 25 min</p>
-   <p>Build one sheet that proves the prepared student table is sound. Name it <span class="field">Worksheet 3</span>. Use at least these indicators:</p>
+   <p>Build one sheet that proves the prepared student table is sound. Name it <span class="field">3 Audit</span>. Use at least these indicators:</p>
    <table>
      <tr><th>Indicator</th><th>How to build it</th><th>Expected</th></tr>
      <tr><td>Record count</td><td><span class="field">COUNT([student_id])</span></td><td>1,400</td></tr>
@@ -783,6 +784,7 @@
    <div class="note"><span class="lead">Before you submit</span>
    <p>Open each sheet and confirm the caption is actually showing. A caption toggled off still holds your text but won't be visible when your instructor opens the workbook.</p></div>
    <div class="deliv"><h3>Submit for Exercise 2</h3><ul>
+     <li><strong>Sheet names:</strong> Start Here · 1A Relationship · 1B Join · 2 Programs · 3 Audit. The number is the worksheet; A and B are its two versions.</li>
      <li>Worksheet 1 — the same three measures on a relationship and on an inner join</li>
      <li>Worksheet 2 — students by program from the unioned, cleaned, deduplicated raw files, left-joined to the lookup with "Unknown Program" visible</li>
      <li>Worksheet 3 — a quality audit with at least five indicators</li>
@@ -805,7 +807,7 @@
    <div class="formula"><button class="copy">Copy</button><pre>[total_aid_awarded] / [credits_attempted]</pre></div>
    <p>This computes per student, then Tableau aggregates the results. Now the aggregate version, <strong>Aid per Credit (agg)</strong>:</p>
    <div class="formula"><button class="copy">Copy</button><pre>SUM([total_aid_awarded]) / SUM([credits_attempted])</pre></div>
-   <p>Put <span class="field">college</span> on Rows and both fields on Columns. Set the first to <strong>Average</strong>. Format both as currency with no decimals. Name the sheet <span class="field">Worksheet 1</span>.</p>
+   <p>Put <span class="field">college</span> on Rows and both fields on Columns. Set the first to <strong>Average</strong>. Format both as currency with no decimals. Name the sheet <span class="field">1 Aid per Credit</span>.</p>
    <table>
      <tr><th>College</th><th>Avg of ratios (row)</th><th>Ratio of sums (agg)</th></tr>
      <tr><td>Liberal Arts</td><td>$2,014</td><td>$1,235</td></tr>
@@ -850,7 +852,7 @@ ELSEIF [term_gpa] >= 3.00 THEN "Good standing"
 ELSEIF [term_gpa] >= 2.00 THEN "Academic warning"
 ELSE "Probation"
 END</pre></div>
-   <p>Drag it to <strong>Rows</strong> and a distinct count of <span class="field">student_id</span> to <strong>Columns</strong>. Name the sheet <span class="field">Worksheet 2</span>.</p>
+   <p>Drag it to <strong>Rows</strong> and a distinct count of <span class="field">student_id</span> to <strong>Columns</strong>. Name the sheet <span class="field">2 Standing</span>.</p>
    <p>Tableau evaluates ELSEIF branches in order and stops at the first match, so thresholds must run from high to low. Reverse them and everything lands in the first bucket.</p>
    <table>
      <tr><th>Standing</th><th>Distinct students</th><th>Student-terms</th></tr>
@@ -1028,12 +1030,12 @@ END</pre></div>
    <div class="formula"><button class="copy">Copy</button><pre>IF [status] = "Graduated"
 THEN DATEDIFF('month', [entry_date], [Last Term Attended])
 END</pre></div>
-   <p>Non-graduates return null, and Tableau ignores nulls when it aggregates. Sort by Graduation Rate, descending. Name the sheet <span class="field">Worksheet 3</span>.</p>
+   <p>Non-graduates return null, and Tableau ignores nulls when it aggregates. Sort by Graduation Rate, descending. Name the sheet <span class="field">3A Cross-tab All Cohorts</span>.</p>
    <h3>Now read it with the cohort trap in mind</h3>
    <p>Environmental Science sits near the bottom at 46.7%. Look at how many of its students entered in 2022 — the cohort that couldn't have graduated yet.</p>
    <ol>
      <li>Duplicate the sheet. Add <span class="field">cohort_year</span> to Filters and keep 2020 and 2021 only.</li>
-     <li>Re-sort. Name it <span class="field">Worksheet 3 — 2020–21 Cohorts</span>.</li>
+     <li>Re-sort. Name it <span class="field">3B Cross-tab 2020–21</span>.</li>
    </ol>
    <table>
      <tr><th>Program</th><th>All cohorts</th><th>Share from 2022</th><th>2020–21 only</th></tr>
@@ -1077,6 +1079,7 @@ END</pre></div>
    <div class="note"><span class="lead">Before you submit</span>
    <p>Open each sheet and confirm the caption is showing. Then check the fields: every calculated field you created should be named, formatted, and carry a comment (right-click → <strong>Default Properties</strong> → <strong>Comment</strong>).</p></div>
    <div class="deliv"><h3>Submit for Exercise 3</h3><ul>
+     <li><strong>Sheet names:</strong> Start Here · 1 Aid per Credit · 2 Standing · 3A Cross-tab All Cohorts · 3B Cross-tab 2020–21. The number is the worksheet; A and B are its two versions.</li>
      <li>Worksheet 1 — row-level versus aggregate aid per credit, compared across colleges</li>
      <li>Worksheet 2 — distinct students by Academic Standing</li>
      <li>Worksheet 3 — the summary cross-tab, using at least three calculated fields, plus the 2020–21 version</li>
@@ -1980,7 +1983,7 @@ END</pre></div>
    </ol>
    <div class="formula"><button class="copy">Copy</button><pre>UPPER(TRIM([course_code])) + " — " + UPPER([course_title]) + " (" + [term_code] + ")"</pre></div>
    <ol start="3">
-     <li>New worksheet, <span class="field">Worksheet 1 — Before</span>: <span class="field">student_id</span> and <span class="field">term_code</span> on Rows, <span class="field">credit_hours</span> (Sum) on Text, <strong>Course Label</strong> on Detail.</li>
+     <li>New worksheet, <span class="field">1A Before</span>: <span class="field">student_id</span> and <span class="field">term_code</span> on Rows, <span class="field">credit_hours</span> (Sum) on Text, <strong>Course Label</strong> on Detail.</li>
      <li>Add <span class="field">full_name</span> to Filters and show it as a quick filter with <strong>Only Relevant Values</strong>.</li>
      <li>Put the sheet on a dashboard next to a second sheet of headcount by college, and add a filter action from the college sheet to this one.</li>
    </ol>
@@ -2027,7 +2030,7 @@ END</pre></div>
      <li>Remove <strong>Course Label</strong> from Detail (a dimension on Tooltip splits marks too). Marks drop from 10,147 to 4,047.</li>
      <li>Ask whether a reader needs 4,047 rows at all. A summary by college and term is 36 marks.</li>
    </ul>
-   <p>Save the fixed sheet as <span class="field">Worksheet 1 — After</span>, record the same interactions again, and save <span class="field">Performance_After.twbx</span>.</p>
+   <p>Save the fixed sheet as <span class="field">1B After</span>, record the same interactions again, and save <span class="field">Performance_After.twbx</span>.</p>
    <div class="trap"><span class="lead">Change one thing, measure, then change the next</span>
    <p>If you fix four things at once and the recording improves, you can't say which fix mattered. Your caption has to name a cause, not just a result.</p></div>
     <div class="stepnav"><a class="prev" href="#step-47">&larr; Previous</a><a class="next" href="#step-49">Next step &rarr;</a></div>
@@ -2040,7 +2043,7 @@ END</pre></div>
    <p>A live connection to a CSV re-reads the file. An <strong>extract</strong> copies the data into Tableau's own <span class="field">.hyper</span> format, built for fast analytical queries — and it's a chance to leave out everything the analysis doesn't use.</p>
    <ol>
      <li>New data source: <span class="field">mvu_enrollment_fact.csv</span> on its own.</li>
-     <li>Build <span class="field">Worksheet 2</span>: <span class="field">college</span> on Rows, <span class="field">term_code</span> on Columns, a record count on Text.</li>
+     <li>Build <span class="field">2 Extract</span>: <span class="field">college</span> on Rows, <span class="field">term_code</span> on Columns, a record count on Text.</li>
      <li>On the data source page, switch <strong>Live</strong> to <strong>Extract</strong>, then click <strong>Edit</strong>.</li>
      <li><strong>Filters:</strong> add <span class="field">cohort_year</span>, keep 2020 and 2021.</li>
      <li>Click <strong>Hide All Unused Fields</strong>, then tick <strong>Aggregate data for visible dimensions</strong>.</li>
@@ -2072,7 +2075,7 @@ END</pre></div>
     <p class="stepmeta">Tableau Desktop and Tableau Server or Cloud · 25 min</p>
    <p>Publishing turns a file on your laptop into something other people depend on. The questions change from "is it right?" to "who can see it, who can change it, and how does it stay current?"</p>
    <ol>
-     <li>Tidy first: <strong>Hide All Unused Fields</strong>, check container padding, name every sheet. Build a small dashboard, <span class="field">Worksheet 3</span>, from Worksheet 1 — After and Worksheet 2.</li>
+     <li>Tidy first: <strong>Hide All Unused Fields</strong>, check container padding, name every sheet. Build a small dashboard named <span class="field">3 Published</span> from <span class="field">1B After</span> and <span class="field">2 Extract</span>.</li>
      <li><strong>Server</strong> → <strong>Publish Workbook</strong>. Choose the course project your instructor gives you.</li>
      <li><strong>Permissions:</strong> viewers can view; only you can edit. Don't grant download of full data unless there's a reason.</li>
      <li><strong>Data sources:</strong> choose to include the extract with the workbook.</li>
@@ -2099,6 +2102,7 @@ END</pre></div>
    <div class="warn"><span class="lead">Worksheet 1 carries 25% on its own</span>
    <p>"The After version is faster" does not earn full marks. Name the event, name the cause, and show the change one fix made.</p></div>
    <div class="deliv"><h3>Submit for Exercise 8</h3><ul>
+     <li><strong>Sheet names:</strong> Start Here · 1A Before · 1B After · 2 Extract · 3 Published. The number is the worksheet; A and B are its two versions.</li>
      <li>Worksheet 1 — Before and After sheets, with <code>Performance_Before.twbx</code> and <code>Performance_After.twbx</code></li>
      <li>Worksheet 2 — a filtered, aggregated extract with unused fields hidden</li>
      <li>Worksheet 3 — the published view's link, or your chosen settings if you couldn't publish</li>
