@@ -188,6 +188,11 @@
   .book .ch{font-weight:650;white-space:nowrap}
   .book .nm{flex:1;color:var(--ink-soft)}
   .book .sz{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+  /* ---- exercise handout download ---- */
+  .handout{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 22px;padding:12px 16px;border-radius:3px;background:var(--amber-bg);border:1px solid var(--amber-rule)}
+  .handout a{display:inline-flex;align-items:center;gap:10px;background:#E8C987;color:#10314A;text-decoration:none;font-family:var(--sans);font-size:14px;font-weight:650;padding:8px 14px;border-radius:3px;white-space:nowrap}
+  .handout a:hover{background:#F0D59C}
+  .handout span{font-family:var(--sans);font-size:13.5px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -311,6 +316,7 @@
     <p class="eyebrow">Module 1 &middot; Step 1 of 6</p>
     <h2>Set up, connect, and fix the metadata</h2>
     <p class="stepmeta">Tableau Desktop · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise1_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 1 handout</a><span>PDF &middot; 66 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>You need two things open before you start: <strong>Tableau Desktop</strong> and the folder holding the MVU files. This module uses only the cleaned data, so you don't need Prep yet.</p>
    <ol>
      <li>Launch Tableau Desktop.</li>
@@ -534,6 +540,7 @@
     <p class="eyebrow">Module 2 &middot; Step 1 of 8</p>
     <h2>Document the data before you touch it</h2>
     <p class="stepmeta">Setup · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise2_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 2 handout</a><span>PDF &middot; 73 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>Exercise 2 has no memo. Your three captions carry the documentation instead — so write down what you're working with now, while it's in front of you.</p>
    <p>For each file, note what one row represents and the row count.</p>
    <table>
@@ -792,6 +799,7 @@
     <p class="eyebrow">Module 3 &middot; Step 1 of 8</p>
     <h2>Worksheet 1 — row-level versus aggregate</h2>
     <p class="stepmeta">Tableau Desktop · 25 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise3_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 3 handout</a><span>PDF &middot; 62 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>This distinction causes more wrong numbers than any other calculation topic. Build both and compare.</p>
    <p>Connect <span class="field">mvu_student_dim.csv</span>. Create a calculated field named <strong>Aid per Credit (row)</strong>:</p>
    <div class="formula"><button class="copy">Copy</button><pre>[total_aid_awarded] / [credits_attempted]</pre></div>
@@ -1083,6 +1091,7 @@ END</pre></div>
     <p class="eyebrow">Module 4 &middot; Step 1 of 7</p>
     <h2>Review: are you ready for Module 4?</h2>
     <p class="stepmeta">Tableau Desktop · 25 min · do this before continuing</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise4_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 4 handout</a><span>PDF &middot; 61 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
     
     
    <p>Module 4 assumes everything from the first three modules. Table calculations sit on top of a view you've already built correctly — if the underlying model or calculation is wrong, the table calculation will be confidently wrong too, and much harder to debug.</p>
@@ -1360,6 +1369,7 @@ END</pre></div>
     <p class="eyebrow">Module 5 &middot; Step 1 of 6</p>
     <h2>Build the three views you&#x27;ll assemble</h2>
     <p class="stepmeta">Tableau Desktop · 20 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise5_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 5 handout</a><span>PDF &middot; 59 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
     
     
    <p>A dashboard is only as good as the views on it, so build these three first. Connect <span class="field">mvu_student_dim.csv</span> — all three come from that one file.</p>
@@ -1550,6 +1560,7 @@ END</pre></div>
     <p class="eyebrow">Module 6 &middot; Step 1 of 5</p>
     <h2>Turn coordinates into geometry</h2>
     <p class="stepmeta">Tableau Desktop · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise6_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 6 handout</a><span>PDF &middot; 61 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
     
     
    <p>Latitude and longitude are just numbers. Tableau will happily plot them, but none of the spatial functions in this module will accept them until you convert them into <strong>spatial objects</strong>.</p>
@@ -1603,7 +1614,7 @@ END</pre></div>
    </ol>
    <h3>Add the campuses as a second layer</h3>
    <ol start="5">
-     <li>Drag <span class="field">Campus Point</span> onto the map. A drop target labelled <strong>Add a Marks Layer</strong> appears at the top left — drop it there, not on the existing marks.</li>
+     <li>Drag <span class="field">Campus Point</span> onto the map. A drop target labeled <strong>Add a Marks Layer</strong> appears at the top left — drop it there, not on the existing marks.</li>
      <li>On the new layer's Marks card, set the mark type to <strong>Shape</strong>, choose something distinct, and increase the size.</li>
      <li>Drag <span class="field">campus_name</span> to <strong>Label</strong> on that layer.</li>
    </ol>
@@ -1718,6 +1729,7 @@ ELSE "Beyond 50 miles" END</pre></div>
     <p class="eyebrow">Module 7 &middot; Step 1 of 6</p>
     <h2>Set up the fields you'll reuse</h2>
     <p class="stepmeta">Tableau Desktop · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise7_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 7 handout</a><span>PDF &middot; 68 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>Filter actions let a reader narrow a dashboard. <strong>Set actions</strong> and <strong>parameter actions</strong> go further: a click changes the groups and thresholds the calculations are built on. This module builds three views that do that, all from <span class="field">mvu_student_dim.csv</span>.</p>
    <ol>
      <li>Connect <span class="field">mvu_student_dim.csv</span>. Check that <span class="field">student_id</span> is a dimension; if it's green, right-click → <strong>Convert to Dimension</strong>.</li>
@@ -1920,6 +1932,7 @@ END</pre></div>
     <p class="eyebrow">Module 8 &middot; Step 1 of 6</p>
     <h2>What "fast" means, and why MVU will look fast anyway</h2>
     <p class="stepmeta">Setup · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise8_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 8 handout</a><span>PDF &middot; 65 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>Every module so far has been about getting the numbers right. This one is about getting them to the reader quickly and safely: finding what makes a workbook slow, shrinking the data it has to read, and publishing it so the right people can see it.</p>
    <p>There's a catch worth naming up front. The MVU enrollment table has about ten thousand rows, so almost everything you build will redraw in well under a second. That's fine. The skill here is <strong>reading the evidence</strong> — knowing which event is slowest and why — because the same causes that cost milliseconds on MVU cost minutes on a table of fifty million rows.</p>
    <table>
@@ -2098,6 +2111,7 @@ END</pre></div>
     <p class="eyebrow">Module 9 &middot; Step 1 of 6</p>
     <h2>Why leave Tableau at all?</h2>
     <p class="stepmeta">Setup · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise9_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 9 handout</a><span>PDF &middot; 72 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>Every module so far has let Tableau make hundreds of decisions for you: the scale, the axis, where the zero goes, how a filter recomputes. In this module you make those decisions yourself, in code, with <strong>D3</strong> inside an <strong>Observable</strong> notebook — and find out which of them you'd been relying on.</p>
    <table>
      <tr><th></th><th>Tableau</th><th>Observable + D3</th></tr>
@@ -2307,6 +2321,7 @@ END</pre></div>
     <p class="eyebrow">Module 10 &middot; Step 1 of 6</p>
     <h2>From one chart to a dashboard</h2>
     <p class="stepmeta">Setup · 15 min</p>
+   <div class="handout"><a href="handouts/MIS6380_Exercise10_Student.pdf" download><span aria-hidden="true" style="color:inherit">&darr;</span>Exercise 10 handout</a><span>PDF &middot; 64 KB &middot; the graded version of this module: what to build, the caption questions and what to submit.</span></div>
    <p>Module 9 gave you one chart. This module turns it into a dashboard: headline numbers, two charts, one theme, and a layout that still works on a phone. You've done this before — in Module 5, with Tableau's containers. The ideas carry over almost one for one.</p>
    <table>
      <tr><th>Tableau (Module 5)</th><th>CSS</th></tr>
@@ -2525,7 +2540,7 @@ END</pre></div>
    <p>"CSS is more flexible" does not earn full marks. Name specific equivalents — flex for a horizontal container, grid spans for distribute-evenly, media queries for device layouts — and say where each tool helped or got in the way.</p></div>
    <div class="deliv"><h3>Submit for Exercise 10</h3><ul>
      <li>A link to your Observable notebook, openable by your instructor</li>
-     <li>Section 1 — four KPI cards in a flex row, reading the inputs, labelled with the cohorts they cover</li>
+     <li>Section 1 — four KPI cards in a flex row, reading the inputs, labeled with the cohorts they cover</li>
      <li>Section 2 — a 12-column grid with the KPI row and two charts from one reusable chart function</li>
      <li>Section 3 — CSS variables for the theme, a contrast-checked use of the accent, and a media query that stacks the charts</li>
      <li>A Markdown caption after each section, and the reflection at the end</li>
